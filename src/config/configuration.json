@@ -1,0 +1,52 @@
+{
+  "games": [
+    {
+      "name": "mycity",
+      "position": "top",
+      "positionOffset": "150px",
+      "left": "0.5em",
+      "playerPanel": "cty_board_{{player_id}}",
+      "playerPanelOffset": 50,
+      "iconBackground": "#ebd5bd",
+      "iconBorder": "#222222",
+      "iconColor": "#222222",
+      "iconShadow": "#ffffff"
+    },
+    {
+      "name": "abyss",
+      "position": "bottom",
+      "positionOffset": "50px",
+      "left": "0.5em",
+      "playerPanel": "player-panel-{{player_id}}",
+      "playerPanelOffset": 50,
+      "iconBackground": "#ebd5bd",
+      "iconBorder": "#222222",
+      "iconColor": "#222222",
+      "iconShadow": "#ffffff"
+    },
+    {
+      "name": "conspiracy",
+      "position": "bottom",
+      "positionOffset": "70px",
+      "left": "12px",
+      "playerPanel": "player-table-{{player_id}}",
+      "playerPanelOffset": 80,
+      "iconBackground": "#ebd5bd",
+      "iconBorder": "#222222",
+      "iconColor": "#222222",
+      "iconShadow": "#ffffff"
+    },
+    {
+      "name": "thurnandtaxis",
+      "position": "bottom",
+      "positionOffset": "10px",
+      "left": "0.5em",
+      "playerPanel": "miniboard_{{player_id}}",
+      "playerPanelOffset": 50,
+      "iconBackground": "#ebd5bd",
+      "iconBorder": "#222222",
+      "iconColor": "#222222",
+      "iconShadow": "#000000"
+    }
+  ]
+}
