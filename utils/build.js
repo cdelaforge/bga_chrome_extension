@@ -4,21 +4,21 @@ process.env.NODE_ENV = 'production';
 process.env.ASSET_PATH = '/';
 
 var webpack = require('webpack'),
-  path = require('path'),
-  fs = require('fs'),
   config = require('../webpack.config'),
+  fs = require('fs'),
   ZipPlugin = require('zip-webpack-plugin');
 
 delete config.chromeExtensionBoilerplate;
 
 config.mode = 'production';
 
-var packageInfo = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
+var json = JSON.parse(fs.readFileSync('package.json', 'utf-8'));
 
 config.plugins = (config.plugins || []).concat(
   new ZipPlugin({
-    filename: `${packageInfo.name}-${packageInfo.version}.zip`,
-    path: path.join(__dirname, '../', 'zip'),
+    path: '../zip', // don't save the zip file inside the build directory
+    filename: json.name + '-' + json.version + '.zip',
+    extension: 'zip',
   })
 );
 

@@ -47,6 +47,18 @@
       "iconBorder": "#222222",
       "iconColor": "#222222",
       "iconShadow": "#000000"
+    },
+    {
+      "name": "seasons",
+      "position": "bottom",
+      "positionOffset": "50px",
+      "left": "0.5em",
+      "playerPanel": "anchor_player_{{player_id}}",
+      "playerPanelOffset": 50,
+      "iconBackground": "#ebd5bd",
+      "iconBorder": "#222222",
+      "iconColor": "#222222",
+      "iconShadow": "#ffffff"
     }
   ]
 }

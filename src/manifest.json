@@ -6,11 +6,7 @@
   "permissions": [
     "storage"
   ],
-  "background": {
-    "service_worker": "background.bundle.js"
-  },
   "action": {
-    "default_popup": "popup.html",
     "default_icon": "icon-34.png"
   },
   "icons": {
@@ -46,14 +42,15 @@
       ]
     }
   ],
-  "devtools_page": "devtools.html",
   "web_accessible_resources": [
     {
       "resources": [
         "icon-128.png",
         "icon-34.png"
       ],
-      "matches": []
+      "matches": [
+        "https://boardgamearena.com/*"
+      ]
     }
   ]
 }
