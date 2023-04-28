@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { Game } from "../../config/Configuration";
@@ -50,12 +50,58 @@ interface SideMenuProps {
 }
 
 const SideMenu = (props: SideMenuProps) => {
+  const { players, gameConfig } = props;
   const [visible, setVisible] = useState(true);
+  const [position, setPosition] = useState(gameConfig.position === 'bottom' ? 'bottom' : 'top');
+  const [zoomVisible, setZoomVisible] = useState(false);
+
+  const setMenuPosition = () => {
+    if (gameConfig.position === 'auto') {
+      const isMobile = document.body.classList.contains('mobile_version');
+      setPosition(isMobile ? 'bottom' : 'top');
+    }
+
+    const isZoomVisible = document.getElementById('globalaction_zoom_wrap')?.style.display === 'inline-block';
+    setZoomVisible(isZoomVisible);
+  };
+
+  const onScroll = () => {
+    //console.log(window.scrollY + " " + zoom);
+  };
+
+  useEffect(() => {
+    setMenuPosition();
+    window.addEventListener('resize', setMenuPosition);
+    window.addEventListener('scroll', onScroll);
+    return () => {
+      window.removeEventListener('resize', setMenuPosition);
+    };
+  });
+
+  useEffect(() => {
+    const barContainer = document.getElementById('bga_extension_sidebar');
+
+    if (barContainer) {
+      if (position === 'top') {
+        barContainer.style.top = gameConfig.positionTop || '150px';
+        barContainer.style.bottom = '';
+      } else if (gameConfig.positionBottom === 'auto') {
+        barContainer.style.top = '';
+        barContainer.style.bottom = zoomVisible ? '70px' : '10px';
+      } else {
+        barContainer.style.top = '';
+        barContainer.style.bottom = gameConfig.positionBottom || '70px';
+      }
+    }
+  }, [position, zoomVisible, gameConfig.positionTop, gameConfig.positionBottom]);
 
   const scrollToTop = () => {
-    window.scrollTo({
+    const element = document.getElementById("page-content");
+    const topBar = document.getElementById("topbar");
+    element && topBar && console.log(element.getBoundingClientRect().top + " " + document.body.getBoundingClientRect().top + " " + topBar.getBoundingClientRect().height);
+    element && topBar && window.scrollTo({
       behavior: 'smooth',
-      top: 0
+      top: topBar.getBoundingClientRect().height + 2,
     });
   };
 
@@ -65,20 +111,20 @@ const SideMenu = (props: SideMenuProps) => {
 
   return (
     <Container>
-      {props.gameConfig.position === 'top' && <SideMenuItem onClick={toggleMenu}>
-        <Avatar backColor={props.gameConfig.iconBackground} borderColor={props.gameConfig.iconBorder} shadowColor={props.gameConfig.iconShadow}>
+      {position === 'top' && <SideMenuItem onClick={toggleMenu}>
+        <Avatar backColor={gameConfig.iconBackground} borderColor={gameConfig.iconBorder} shadowColor={gameConfig.iconShadow}>
           {visible && <CloseIcon />}
           {!visible && <SandwichIcon />}
         </Avatar>
       </SideMenuItem>}
       {visible && <SideMenuItem onClick={scrollToTop}>
-        <Avatar backColor={props.gameConfig.iconBackground} borderColor={props.gameConfig.iconBorder} shadowColor={props.gameConfig.iconShadow}>
+        <Avatar backColor={gameConfig.iconBackground} borderColor={gameConfig.iconBorder} shadowColor={gameConfig.iconShadow}>
           <TopArrowIcon />
         </Avatar>
       </SideMenuItem>}
-      {visible && props.players.map((p) => <PlayerIcon key={`item_${p.id}`} player={p} gameConfig={props.gameConfig} />)}
-      {props.gameConfig.position === 'bottom' && <SideMenuItem onClick={toggleMenu}>
-        <Avatar backColor={props.gameConfig.iconBackground} borderColor={props.gameConfig.iconBorder} shadowColor={props.gameConfig.iconShadow}>
+      {visible && players.map((p) => <PlayerIcon key={`item_${p.id}`} player={p} gameConfig={gameConfig} />)}
+      {position === 'bottom' && <SideMenuItem onClick={toggleMenu}>
+        <Avatar backColor={gameConfig.iconBackground} borderColor={gameConfig.iconBorder} shadowColor={gameConfig.iconShadow}>
           {visible && <CloseIcon />}
           {!visible && <SandwichIcon />}
         </Avatar>

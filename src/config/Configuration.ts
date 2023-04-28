@@ -1,15 +1,19 @@
 import equal from "fast-deep-equal";
+import defaultGames from "./DefaultGames";
 
 export interface Game {
-  "name": string,
-  "position": 'top' | 'bottom',
-  "positionOffset": string,
-  "playerPanel": string,
-  "playerPanelOffset": number,
-  "iconBackground": string,
-  "iconBorder": string,
-  "iconColor": string,
-  "iconShadow": string
+  name: string,
+  position: 'top' | 'bottom' | 'auto',
+  positionTop?: string,
+  positionBottom?: string,
+  left: string,
+  playerPanel: string,
+  playerPanelOffset: number,
+  iconBackground: string,
+  iconBorder: string,
+  iconColor: string,
+  iconShadow: string,
+  css?: string
 }
 
 class Configuration {
@@ -18,18 +22,17 @@ class Configuration {
   _config: { games: Game[] };
 
   constructor() {
-    this._defConfig = { games: [] };
+    this._defConfig = { games: defaultGames };
     this._customConfig = { games: [] };
     this._config = { games: [] };
   }
 
   async init() {
-    this._defConfig = require(`./configuration.json`);
     this._customConfig = (await chrome.storage.sync.get('games')) as any;
-
+    if (!this._customConfig.games) {
+      this._customConfig.games = [];
+    }
     this.merge();
-
-    console.log("Configuration", this._config);
   }
 
   private merge() {
