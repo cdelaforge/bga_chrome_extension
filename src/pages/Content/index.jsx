@@ -2,14 +2,11 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import Configuration from '../../config/Configuration';
 import SideMenu from './SideMenu';
+import { isNumber } from '../../helpers/Misc';
 
 const pageInfo = window.location.pathname.substring(1).split('/');
 let gameConfig;
 let playersData;
-
-const isNumber = (val) => {
-  return /^[0-9]*$/.exec(val) != null;
-};
 
 const buildCss = () => {
   if (gameConfig.css) {
@@ -22,18 +19,10 @@ const buildCss = () => {
 const buildMenu = () => {
   const container = document.createElement('div');
   container.id = 'bga_extension_sidebar';
-
   container.style.position = "fixed";
-  /*
-  if (gameConfig.position === "top") {
-    container.style.top = gameConfig.positionOffset;
-  } else {
-    container.style.bottom = gameConfig.positionOffset;
-  }*/
   container.style.left = gameConfig.left;
   container.style.userSelect = "none";
   container.style.zIndex = 5;
-
   document.body.appendChild(container);
 
   createRoot(container).render(<SideMenu players={playersData} panel={gameConfig.playerPanel} gameConfig={gameConfig} />);
@@ -72,6 +61,11 @@ if (pageInfo.length >= 2 && isNumber(pageInfo[0])) {
 
     if (!gameConfig) {
       console.log(`[bga extension] No configuration found for game ${gameName}`);
+      return;
+    }
+
+    if (!config.isGameEnabled(gameName)) {
+      console.log(`[bga extension] Menu disabled for game ${gameName}`);
       return;
     }
 

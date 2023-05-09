@@ -18,19 +18,22 @@ export interface Game {
 
 class Configuration {
   _defConfig: { games: Game[] };
-  _customConfig: { games: Game[] };
+  _customConfig: { games: Game[], disabled: string[] };
   _config: { games: Game[] };
 
   constructor() {
     this._defConfig = { games: defaultGames };
-    this._customConfig = { games: [] };
+    this._customConfig = { games: [], disabled: [] };
     this._config = { games: [] };
   }
 
   async init() {
-    this._customConfig = (await chrome.storage.sync.get('games')) as any;
+    this._customConfig = (await chrome.storage.sync.get()) as any;
     if (!this._customConfig.games) {
       this._customConfig.games = [];
+    }
+    if (!this._customConfig.disabled) {
+      this._customConfig.disabled = [];
     }
     this.merge();
   }
@@ -78,6 +81,20 @@ class Configuration {
   isCustomized(name: string) {
     const custGame = this._customConfig.games.find(g => g.name === name);
     return !!custGame;
+  }
+
+  setGameEnabled(name: string, enable: boolean) {
+    this._customConfig.disabled = this._customConfig.disabled.filter(n => n !== name);
+
+    if (!enable) {
+      this._customConfig.disabled.push(name);
+    }
+
+    chrome.storage.sync.set({ disabled: this._customConfig.disabled });
+  }
+
+  isGameEnabled(name: string) {
+    return !this._customConfig.disabled.includes(name);
   }
 }
 

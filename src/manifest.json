@@ -6,7 +6,11 @@
   "permissions": [
     "storage"
   ],
+  "host_permissions": [
+    "https://boardgamearena.com/"
+  ],
   "action": {
+    "default_popup": "popup.html",
     "default_icon": "icon-34.png"
   },
   "icons": {

@@ -1,4 +1,6 @@
-const defaultGames = [
+import { Game } from "./Configuration";
+
+const defaultGames: Game[] = [
   {
     "name": "mycity",
     "position": "bottom",
@@ -102,7 +104,7 @@ const defaultGames = [
     "iconBorder": "#222222",
     "iconColor": "#222222",
     "iconShadow": "#000000",
-    "css": ".desktop_version #page-title { margin-left: 52px; } #pagesection_gameview { padding-left: 52px; }"
+    "css": ".desktop_version #page-title { margin-left: 52px; } .desktop_version #pagesection_gameview { padding-left: 52px; }"
   },
   {
     "name": "amerigo",
@@ -144,6 +146,20 @@ const defaultGames = [
     "iconColor": "#222222",
     "iconShadow": "#000000",
     "css": "#jump-controls { display: none; }"
+  },
+  {
+    "name": "villagers",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "vil_village_{{player_id}}",
+    "playerPanelOffset": 0,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": ".desktop_version #villages { margin-left: 50px; }"
   }
 ];
 
