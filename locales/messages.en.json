@@ -1,0 +1,8 @@
+{
+  "appName": {
+    "message": "BoardGameArena Extension"
+  },
+  "appDesc": {
+    "message": "A chrome extension for https://boardgamearena.com/"
+  }
+}

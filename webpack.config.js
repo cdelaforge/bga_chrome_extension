@@ -148,6 +148,24 @@ var options = {
     new CopyWebpackPlugin({
       patterns: [
         {
+          from: 'locales/messages.en.json',
+          to: path.join(__dirname, 'build/_locales/en/messages.json'),
+          force: true,
+        },
+      ],
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'locales/messages.fr.json',
+          to: path.join(__dirname, 'build/_locales/fr/messages.json'),
+          force: true,
+        },
+      ],
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
           from: 'src/assets/img/icon-128.png',
           to: path.join(__dirname, 'build'),
           force: true,

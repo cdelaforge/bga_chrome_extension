@@ -26,7 +26,7 @@ const Body = styled.div`
   padding: 0.5em;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   line-height: 24px;
   gap: 0.5em;
 `;
@@ -44,6 +44,7 @@ const Popup = () => {
   const [gamesList, setGamesList] = useState();
   const [gameConfig, setGameConfig] = useState();
   const [activated, setActivated] = useState(true);
+  const [dispMessage, setDispMessage] = useState(false);
 
   useEffect(() => {
     try {
@@ -55,7 +56,10 @@ const Popup = () => {
         }
       });
 
-      config.init().then(() => setGamesList(config.getGamesList())).error(() => setGamesList([]));
+      config.init().then(() => {
+        setDispMessage(config.isOnlineMessagesEnabled());
+        setGamesList(config.getGamesList());
+      }).error(() => setGamesList([]));
     }
     catch (error) { }
   }, []);
@@ -76,9 +80,7 @@ const Popup = () => {
       const currentGame = gamesList.find(g => g.name === gameName);
       if (currentGame) {
         setGameConfig(currentGame);
-        if (!config.isGameEnabled(gameName)) {
-          setActivated(false);
-        }
+        setActivated(config.isGameEnabled(gameName));
       }
     }
   }, [gamesList, gameName]);
@@ -87,6 +89,20 @@ const Popup = () => {
     setActivated(!activated);
     config.setGameEnabled(gameName, !activated);
   };
+
+  const toggleDispMessage = () => {
+    setDispMessage(!dispMessage);
+    config.setOnlineMessagesEnabled(!dispMessage);
+  };
+
+  const getCommonConfig = () => {
+    return (
+      <>
+        <span>Display online/offline messages</span>
+        <Switch onChange={toggleDispMessage} checked={dispMessage} />
+      </>
+    );
+  }
 
   const getBody = () => {
     if (!gameName) {
@@ -106,11 +122,7 @@ const Popup = () => {
   };
 
   const getFooter = () => {
-    if (gameConfig) {
-      return <span>You must reload the page if you change the configuration</span>;
-    }
-
-    return <></>;
+    return <span>You must reload the page if you change the configuration</span>;
   }
 
   return (
@@ -119,12 +131,9 @@ const Popup = () => {
         <img src={logo} className="App-logo" alt="logo" />
         <span>BGA Extension</span>
       </Header>
-      <Body>
-        {getBody()}
-      </Body>
-      <Footer>
-        {getFooter()}
-      </Footer>
+      <Body>{getCommonConfig()}</Body>
+      <Body>{getBody()}</Body>
+      <Footer>{getFooter()}</Footer>
     </>
   );
 };

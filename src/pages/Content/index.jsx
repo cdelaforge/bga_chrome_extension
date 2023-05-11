@@ -1,6 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import Configuration from '../../config/Configuration';
+import shouldFilter from '../../config/FilteredLogs';
 import SideMenu from './SideMenu';
 import { isNumber } from '../../helpers/Misc';
 
@@ -26,6 +27,29 @@ const buildMenu = () => {
   document.body.appendChild(container);
 
   createRoot(container).render(<SideMenu players={playersData} panel={gameConfig.playerPanel} gameConfig={gameConfig} />);
+};
+
+const initlogObserver = () => {
+  const logsContainer = document.querySelector("#logs");
+
+  if (!logsContainer) {
+    setTimeout(initlogObserver, 100);
+    return;
+  }
+
+  const observer = new MutationObserver(() => {
+    logsContainer.childNodes.forEach((elt, index) => {
+      const text = elt.innerHTML;
+      if (text && text.indexOf('<!--PNS-->') >= 0 && shouldFilter(text)) {
+        logsContainer.removeChild(elt);
+      }
+      if (index > 20) {
+        return;
+      }
+    });
+  });
+
+  observer.observe(logsContainer, { childList: true, subtree: true });
 };
 
 const init = () => {
@@ -59,6 +83,10 @@ if (pageInfo.length >= 2 && isNumber(pageInfo[0])) {
   config.init().then(() => {
     gameConfig = config.getGameConfig(gameName);
 
+    if (!config.isOnlineMessagesEnabled()) {
+      setTimeout(initlogObserver, 1000);
+    }
+
     if (!gameConfig) {
       console.log(`[bga extension] No configuration found for game ${gameName}`);
       return;
@@ -71,4 +99,4 @@ if (pageInfo.length >= 2 && isNumber(pageInfo[0])) {
 
     init();
   });
-}
+};

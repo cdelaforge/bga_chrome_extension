@@ -1,7 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "BoardGameArena Extension",
-  "description": "A chrome extension for https://boardgamearena.com/",
+  "name": "__MSG_appName__",
+  "description": "__MSG_appDesc__",
+  "default_locale": "en",
   "options_page": "options.html",
   "permissions": [
     "storage"

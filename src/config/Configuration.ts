@@ -18,7 +18,7 @@ export interface Game {
 
 class Configuration {
   _defConfig: { games: Game[] };
-  _customConfig: { games: Game[], disabled: string[] };
+  _customConfig: { games: Game[], disabled: string[], onlineMessages?: boolean };
   _config: { games: Game[] };
 
   constructor() {
@@ -95,6 +95,15 @@ class Configuration {
 
   isGameEnabled(name: string) {
     return !this._customConfig.disabled.includes(name);
+  }
+
+  setOnlineMessagesEnabled(enable: boolean) {
+    this._customConfig.onlineMessages = enable;
+    chrome.storage.sync.set({ onlineMessages: enable });
+  }
+
+  isOnlineMessagesEnabled() {
+    return this._customConfig.onlineMessages || false;
   }
 }
 
