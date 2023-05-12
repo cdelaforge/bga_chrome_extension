@@ -83,6 +83,10 @@ if (pageInfo.length >= 2 && isNumber(pageInfo[0])) {
   config.init().then(() => {
     gameConfig = config.getGameConfig(gameName);
 
+    const style = document.createElement('style');
+    style.innerHTML = "#lrf-bga-extension { display: none; }";
+    document.head.appendChild(style);
+
     if (!config.isOnlineMessagesEnabled()) {
       setTimeout(initlogObserver, 1000);
     }

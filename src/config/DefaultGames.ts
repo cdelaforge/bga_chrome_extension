@@ -160,6 +160,20 @@ const defaultGames: Game[] = [
     "iconColor": "#222222",
     "iconShadow": "#000000",
     "css": ".desktop_version #villages { margin-left: 50px; }"
+  },
+  {
+    "name": "spots",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "spt-cards{{player_id}}",
+    "playerPanelOffset": 5,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": ".desktop_version #spt-gameArea{ margin-left: 25px; }"
   }
 ];
 
