@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import Configuration from '../../config/Configuration';
 import shouldFilter from '../../config/FilteredLogs';
 import SideMenu from './SideMenu';
+import RightMenu from './RightMenu';
 import { isNumber } from '../../helpers/Misc';
 
 const pageInfo = window.location.pathname.substring(1).split('/');
@@ -14,6 +15,33 @@ const buildCss = () => {
     const style = document.createElement('style');
     style.innerHTML = gameConfig.css;
     document.head.appendChild(style);
+  }
+};
+
+const setFloatingRightMenu = () => {
+  const pageTitle = document.getElementById('page-title');
+
+  if (pageTitle) {
+    const style = document.createElement('style');
+    style.innerHTML = [
+      '#left-side { margin-right: 0px !important; }',
+      '#right-side-first-part, #right-side-second-part { position: fixed; right: 5px;  overflow-y: auto; overflow-x: hidden; z-index: 1000; }',
+      '#right-side-second-part { border: 1px solid black; outline: 1px solid white; background-color: rgb(235, 213, 189); width: 260px !important; }',
+      '#cde-floating-menu { position: absolute; top: 0px; right: 0px; }',
+      '#logs { margin-top: 0px; max-height: 100000px; }',
+      '#seemorelogs { display: none !important; }',
+      '#pagemaintitletext { padding-right: 80px; }',
+      '.mobile_version #cde-floating-menu-log { display: none; }',
+      '.mobile_version #pagemaintitletext { padding-right: 40px; }',
+    ].join(' ');
+    document.head.appendChild(style);
+
+    const container = document.createElement('div');
+    container.id = 'cde-floating-menu';
+    pageTitle.appendChild(container);
+    createRoot(container).render(<RightMenu />);
+  } else {
+    setTimeout(setFloatingRightMenu, 100);
   }
 };
 
@@ -90,6 +118,13 @@ if (pageInfo.length >= 2 && isNumber(pageInfo[0])) {
     if (!config.isOnlineMessagesEnabled()) {
       setTimeout(initlogObserver, 1000);
     }
+    if (config.isFloatingRightMenu()) {
+      setFloatingRightMenu();
+    }
+
+    // left-side => margin-right: 0px
+    //right-side-first-part
+    //right-side-second-part
 
     if (!gameConfig) {
       console.log(`[bga extension] No configuration found for game ${gameName}`);

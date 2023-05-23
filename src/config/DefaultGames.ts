@@ -118,7 +118,7 @@ const defaultGames: Game[] = [
     "iconBorder": "#222222",
     "iconColor": "#222222",
     "iconShadow": "#000000",
-    "css": ".desktop_version #page-title { margin-left: 50px; } #playersections { padding-left: 50px; }"
+    "css": "#playersections { padding-left: 50px; }"
   },
   {
     "name": "agricola",
@@ -174,6 +174,75 @@ const defaultGames: Game[] = [
     "iconColor": "#222222",
     "iconShadow": "#000000",
     "css": ".desktop_version #spt-gameArea{ margin-left: 25px; }"
+  },
+  {
+    "name": "astra",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "tbp-playerCards-{{player_id}}",
+    "playerPanelOffset": 5,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": ".desktop_version #tbp{ margin-left: 50px; }"
+  },
+  {
+    "name": "earth",
+    "position": "top",
+    "positionTop": "40vh",
+    "left": "0.5em",
+    "playerPanel": "ea-area-player-{{player_id}}",
+    "playerPanelOffset": 0,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#ffffff",
+    "css": "#ea-shortcut-area { visibility: hidden; }"
+  },
+  {
+    "name": "gizmos",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "gizmo_track_{{player_id}}",
+    "playerPanelOffset": 5,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": ".desktop_version #gizmos_board{ margin-left: 50px; }"
+  },
+  {
+    "name": "potionexplosion",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "playerArea_{{player_id}}",
+    "playerPanelOffset": 5,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": ".desktop_version #game_play_area { margin-left: 50px; }"
+  },
+  {
+    "name": "spacebase",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "playerTable_{{player_id}}",
+    "playerPanelOffset": 45,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#ffffff",
+    "css": ".desktop_version #game_play_area{ margin-left: 50px; }"
   }
 ];
 

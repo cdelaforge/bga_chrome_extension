@@ -4,5 +4,23 @@
   },
   "appDesc": {
     "message": "Une extension pour https://boardgamearena.com/"
+  },
+  "popupDisplayStatusMessages": {
+    "message": "Afficher l'activité des amis dans le journal de jeu"
+  },
+  "popupFloatingMenu": {
+    "message": "Afficher le journal de jeu et les panneaux des joueurs dans un menu flottant"
+  },
+  "popupNotAGame": {
+    "message": "La page actuelle n'est pas celle d'un jeu BGA"
+  },
+  "popupNotAManagedGame": {
+    "message": "Le menu de sélection des plateaux n'est pas disponible pour ce jeu"
+  },
+  "popupDisplayLeftMenu": {
+    "message": "Afficher le menu de sélection des plateaux pour ce jeu"
+  },
+  "popupReloadInstruction": {
+    "message": "Vous devez recharger la page pour prendre en compte les modifications"
   }
 }

@@ -4,5 +4,23 @@
   },
   "appDesc": {
     "message": "A chrome extension for https://boardgamearena.com/"
+  },
+  "popupDisplayStatusMessages": {
+    "message": "Display friends' activity in the game log"
+  },
+  "popupFloatingMenu": {
+    "message": "Display game log and player panels in a floating menu"
+  },
+  "popupNotAGame": {
+    "message": "The current page is not a BGA game page"
+  },
+  "popupNotAManagedGame": {
+    "message": "The board selection menu is not available for this game"
+  },
+  "popupDisplayLeftMenu": {
+    "message": "Display the board selection menu for this game"
+  },
+  "popupReloadInstruction": {
+    "message": "You must reload the page to reflect the changes"
   }
 }

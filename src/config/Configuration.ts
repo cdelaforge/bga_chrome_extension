@@ -18,7 +18,7 @@ export interface Game {
 
 class Configuration {
   _defConfig: { games: Game[] };
-  _customConfig: { games: Game[], disabled: string[], onlineMessages?: boolean };
+  _customConfig: { games: Game[], disabled: string[], onlineMessages?: boolean, floatingRightMenu?: boolean };
   _config: { games: Game[] };
 
   constructor() {
@@ -104,6 +104,15 @@ class Configuration {
 
   isOnlineMessagesEnabled() {
     return this._customConfig.onlineMessages || false;
+  }
+
+  setFloatingRightMenu(enable: boolean) {
+    this._customConfig.floatingRightMenu = enable;
+    chrome.storage.sync.set({ floatingRightMenu: enable });
+  }
+
+  isFloatingRightMenu() {
+    return this._customConfig.floatingRightMenu !== false;
   }
 }
 

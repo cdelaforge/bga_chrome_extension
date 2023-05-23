@@ -10,7 +10,7 @@ const BGA_URL = 'https://boardgamearena.com/';
 const config = new Configuration();
 
 const Header = styled.div`
-  width: 350px;
+  width: 500px;
   font-size: 2em;
   display: flex;
   align-items: center;
@@ -45,6 +45,8 @@ const Popup = () => {
   const [gameConfig, setGameConfig] = useState();
   const [activated, setActivated] = useState(true);
   const [dispMessage, setDispMessage] = useState(false);
+  const [floatingMenu, setFloatingMenu] = useState(false);
+  const [modification, setModification] = useState(false);
 
   useEffect(() => {
     try {
@@ -58,6 +60,7 @@ const Popup = () => {
 
       config.init().then(() => {
         setDispMessage(config.isOnlineMessagesEnabled());
+        setFloatingMenu(config.isFloatingRightMenu());
         setGamesList(config.getGamesList());
       }).error(() => setGamesList([]));
     }
@@ -87,42 +90,73 @@ const Popup = () => {
 
   const toggleActivated = () => {
     setActivated(!activated);
+    setModification(true);
     config.setGameEnabled(gameName, !activated);
   };
 
   const toggleDispMessage = () => {
     setDispMessage(!dispMessage);
+    setModification(true);
     config.setOnlineMessagesEnabled(!dispMessage);
   };
 
-  const getCommonConfig = () => {
+  const toggleFloatingMenu = () => {
+    setFloatingMenu(!floatingMenu);
+    setModification(true);
+    config.setFloatingRightMenu(!floatingMenu);
+  };
+
+  const getDispStatusConfig = () => {
     return (
       <>
-        <span>Display online/offline messages</span>
+        <span>{chrome.i18n.getMessage("popupDisplayStatusMessages")}</span>
         <Switch onChange={toggleDispMessage} checked={dispMessage} />
+      </>
+    );
+  }
+
+  const getFloatingMenuConfig = () => {
+    return (
+      <>
+        <span>{chrome.i18n.getMessage("popupFloatingMenu")}</span>
+        <Switch onChange={toggleFloatingMenu} checked={floatingMenu} />
       </>
     );
   }
 
   const getBody = () => {
     if (!gameName) {
-      return <span>The current page is not a BGA game</span>
+      return (
+        <>
+          <span>{chrome.i18n.getMessage("popupNotAGame")}</span>
+          <Switch checked={false} disabled={true} />
+        </>
+      );
     }
 
     if (gameConfig) {
       return (
         <>
-          <span>Display menu for this game</span>
+          <span>{chrome.i18n.getMessage("popupDisplayLeftMenu")}</span>
           <Switch onChange={toggleActivated} checked={activated} />
         </>
       );
     }
 
-    return <span>The current page is not a managed BGA game</span>
+    return (
+      <>
+        <span>{chrome.i18n.getMessage("popupNotAManagedGame")}</span>
+        <Switch checked={false} disabled={true} />
+      </>
+    );
   };
 
   const getFooter = () => {
-    return <span>You must reload the page if you change the configuration</span>;
+    if (modification) {
+      return <span>{chrome.i18n.getMessage("popupReloadInstruction")}</span>;
+    }
+
+    return <></>;
   }
 
   return (
@@ -131,7 +165,8 @@ const Popup = () => {
         <img src={logo} className="App-logo" alt="logo" />
         <span>BGA Extension</span>
       </Header>
-      <Body>{getCommonConfig()}</Body>
+      <Body>{getDispStatusConfig()}</Body>
+      <Body>{getFloatingMenuConfig()}</Body>
       <Body>{getBody()}</Body>
       <Footer>{getFooter()}</Footer>
     </>
