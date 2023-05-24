@@ -4,6 +4,7 @@ import Configuration from '../../config/Configuration';
 import shouldFilter from '../../config/FilteredLogs';
 import SideMenu from './SideMenu';
 import RightMenu from './RightMenu';
+import Templates from './Templates';
 import { isNumber } from '../../helpers/Misc';
 
 const pageInfo = window.location.pathname.substring(1).split('/');
@@ -48,9 +49,9 @@ const setFloatingRightMenu = () => {
 const buildMenu = () => {
   const container = document.createElement('div');
   container.id = 'bga_extension_sidebar';
-  container.style.position = "fixed";
+  container.style.position = 'fixed';
   container.style.left = gameConfig.left;
-  container.style.userSelect = "none";
+  container.style.userSelect = 'none';
   container.style.zIndex = 5;
   document.body.appendChild(container);
 
@@ -58,7 +59,7 @@ const buildMenu = () => {
 };
 
 const initlogObserver = () => {
-  const logsContainer = document.querySelector("#logs");
+  const logsContainer = document.querySelector('#logs');
 
   if (!logsContainer) {
     setTimeout(initlogObserver, 100);
@@ -102,9 +103,43 @@ const init = () => {
   } else {
     setTimeout(init, 100);
   }
-}
+};
 
-if (pageInfo.length >= 2 && isNumber(pageInfo[0])) {
+const initDevelopperUI = () => {
+  const butStatus = document.getElementById('change_bug_status_awaiting');
+
+  if (!butStatus) {
+    setTimeout(initDevelopperUI, 100);
+    return;
+  }
+
+  const waitingMsg = document.getElementById('connect_status_text');
+  if (waitingMsg && waitingMsg.getBoundingClientRect().x) {
+    setTimeout(initDevelopperUI, 100);
+    return;
+  }
+
+  if (butStatus.getBoundingClientRect().x) {
+    // the button 'awaiting' is displayed, we are a developper
+    console.log('[bga extension] developper mode !');
+
+    const container = document.createElement('div');
+    const reportArea = document.getElementById('report_log');
+    reportArea.parentNode.insertBefore(container, reportArea);
+
+    const reportName = document.getElementById('report_game_table').firstChild.innerText;
+    const pos = reportName.lastIndexOf('#');
+    const gameName = reportName.substring(0, pos - 1).split();
+
+    console.log(`[bga extension] this a report for '${gameName}'`);
+
+    createRoot(container).render(<Templates game={gameName} />);
+  }
+};
+
+if (pageInfo[0].startsWith('bug')) {
+  initDevelopperUI();
+} else if (pageInfo.length >= 2 && isNumber(pageInfo[0])) {
   const gameName = pageInfo[1];
   const config = new Configuration();
 

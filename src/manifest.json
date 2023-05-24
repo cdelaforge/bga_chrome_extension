@@ -39,7 +39,8 @@
         "https://boardgamearena.com/17/*",
         "https://boardgamearena.com/18/*",
         "https://boardgamearena.com/19/*",
-        "https://boardgamearena.com/20/*"
+        "https://boardgamearena.com/20/*",
+        "https://boardgamearena.com/bug?id=*"
       ],
       "run_at": "document_start",
       "js": [

@@ -14,11 +14,23 @@ export interface Game {
   iconColor: string,
   iconShadow: string,
   css?: string
-}
+};
+
+export interface Template {
+  name: string,
+  text: string,
+  game: string
+};
 
 class Configuration {
   _defConfig: { games: Game[] };
-  _customConfig: { games: Game[], disabled: string[], onlineMessages?: boolean, floatingRightMenu?: boolean };
+  _customConfig: {
+    games: Game[],
+    disabled: string[],
+    onlineMessages?: boolean,
+    floatingRightMenu?: boolean,
+    devTemplates?: Template[]
+  };
   _config: { games: Game[] };
 
   constructor() {
@@ -113,6 +125,40 @@ class Configuration {
 
   isFloatingRightMenu() {
     return this._customConfig.floatingRightMenu !== false;
+  }
+
+  listTemplates() {
+    return [...(this._customConfig.devTemplates || [])];
+  }
+
+  addTemplate(template: Template) {
+    this._customConfig.devTemplates = [...(this._customConfig.devTemplates || []), template];
+    chrome.storage.sync.set({ devTemplates: this._customConfig.devTemplates });
+    return this.listTemplates();
+  }
+
+  updateTemplate(oldName: string, oldGame: string, template: Template) {
+    if (this._customConfig.devTemplates) {
+      const oldTemplate = this._customConfig.devTemplates.find(t => t.name === oldName && t.game === oldGame);
+
+      if (oldTemplate) {
+        oldTemplate.game = template.game;
+        oldTemplate.name = template.name;
+        oldTemplate.text = template.text;
+
+        chrome.storage.sync.set({ devTemplates: this._customConfig.devTemplates });
+      }
+    }
+
+    return this.listTemplates();
+  }
+
+  removeTemplate(template: Template) {
+    if (this._customConfig.devTemplates) {
+      this._customConfig.devTemplates = this._customConfig.devTemplates.filter(t => t.name !== template.name || t.game !== template.game);
+      chrome.storage.sync.set({ devTemplates: this._customConfig.devTemplates });
+    }
+    return this.listTemplates();
   }
 }
 

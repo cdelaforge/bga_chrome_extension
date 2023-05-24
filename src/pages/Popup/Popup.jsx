@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Switch from "react-switch";
 
 import { isNumber } from '../../helpers/Misc';
-import Configuration from "../../config/Configuration";
+import Configuration from '../../config/Configuration';
 import logo from '../../assets/img/icon-34.png';
 
 const BGA_URL = 'https://boardgamearena.com/';
