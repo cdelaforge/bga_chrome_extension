@@ -124,7 +124,7 @@ class Configuration {
   }
 
   isFloatingRightMenu() {
-    return this._customConfig.floatingRightMenu !== false;
+    return false; //this._customConfig.floatingRightMenu !== false;
   }
 
   listTemplates() {

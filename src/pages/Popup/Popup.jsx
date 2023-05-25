@@ -119,7 +119,7 @@ const Popup = () => {
     return (
       <>
         <span>{chrome.i18n.getMessage("popupFloatingMenu")}</span>
-        <Switch onChange={toggleFloatingMenu} checked={floatingMenu} />
+        <Switch onChange={toggleFloatingMenu} checked={floatingMenu} disabled={true} />
       </>
     );
   }

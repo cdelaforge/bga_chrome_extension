@@ -9,7 +9,7 @@
     "message": "Display friends' activity in the game log"
   },
   "popupFloatingMenu": {
-    "message": "Display game log and player panels in a floating menu"
+    "message": "Display game log and player panels in a floating menu [disabled for the moment, the feature will be back soon]"
   },
   "popupNotAGame": {
     "message": "The current page is not a BGA game page"
