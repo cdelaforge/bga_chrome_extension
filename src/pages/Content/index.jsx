@@ -106,15 +106,17 @@ const init = () => {
 };
 
 const initDevelopperUI = () => {
-  const butStatus = document.getElementById('change_bug_status_awaiting');
-
-  if (!butStatus) {
-    setTimeout(initDevelopperUI, 100);
+  if (document.getElementById('last_reports') || document.getElementById('ext_templates')) {
+    // display of reports list, or templates list already displayed, nothing to do
+    setTimeout(initDevelopperUI, 500);
     return;
   }
 
-  const waitingMsg = document.getElementById('connect_status_text');
-  if (waitingMsg && waitingMsg.getBoundingClientRect().x) {
+  const butStatus = document.getElementById('change_bug_status_awaiting') || document.getElementById('change_bug_status_open');
+  const reportArea = document.getElementById('report_log');
+
+  if (!butStatus || !reportArea || !reportArea.getBoundingClientRect().x) {
+    console.log('[bga extension] page is loading...');
     setTimeout(initDevelopperUI, 100);
     return;
   }
@@ -124,17 +126,19 @@ const initDevelopperUI = () => {
     console.log('[bga extension] developper mode !');
 
     const container = document.createElement('div');
-    const reportArea = document.getElementById('report_log');
+    container.id = 'ext_templates';
     reportArea.parentNode.insertBefore(container, reportArea);
 
     const reportName = document.getElementById('report_game_table').firstChild.innerText;
     const pos = reportName.lastIndexOf('#');
     const gameName = reportName.substring(0, pos - 1).split();
 
-    console.log(`[bga extension] this a report for '${gameName}'`);
+    console.log(`[bga extension] this is a report for '${gameName}'`);
 
     createRoot(container).render(<Templates game={gameName} />);
   }
+
+  setTimeout(initDevelopperUI, 500);
 };
 
 if (pageInfo[0].startsWith('bug')) {

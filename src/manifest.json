@@ -7,6 +7,9 @@
   "permissions": [
     "storage"
   ],
+  "background": {
+    "service_worker": "background.bundle.js"
+  },
   "host_permissions": [
     "https://boardgamearena.com/"
   ],
@@ -40,7 +43,7 @@
         "https://boardgamearena.com/18/*",
         "https://boardgamearena.com/19/*",
         "https://boardgamearena.com/20/*",
-        "https://boardgamearena.com/bug?id=*"
+        "https://boardgamearena.com/bug*"
       ],
       "run_at": "document_start",
       "js": [
