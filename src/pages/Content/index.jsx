@@ -20,26 +20,25 @@ const buildCss = () => {
 };
 
 const setFloatingRightMenu = () => {
-  const pageTitle = document.getElementById('page-title');
+  //const pageTitle = document.getElementById('page-title');
+  const pageTitle = document.getElementById('gotonexttable_wrap');
 
   if (pageTitle) {
     const style = document.createElement('style');
     style.innerHTML = [
       '#left-side { margin-right: 0px !important; }',
-      '#right-side-first-part, #right-side-second-part { position: fixed; right: 5px;  overflow-y: auto; overflow-x: hidden; z-index: 1000; }',
+      '#right-side-first-part, #right-side-second-part { position: fixed; right: -500px;  overflow-y: auto; overflow-x: hidden; z-index: 1000; }',
       '#right-side-second-part { border: 1px solid black; outline: 1px solid white; background-color: rgb(235, 213, 189); width: 260px !important; }',
-      '#cde-floating-menu { position: absolute; top: 0px; right: 0px; }',
+      '#cde-floating-menu { display: inline; }',
       '#logs { margin-top: 0px; max-height: 100000px; }',
       '#seemorelogs { display: none !important; }',
-      '#pagemaintitletext { padding-right: 80px; }',
       '.mobile_version #cde-floating-menu-log { display: none; }',
-      '.mobile_version #pagemaintitletext { padding-right: 40px; }',
     ].join(' ');
     document.head.appendChild(style);
 
-    const container = document.createElement('div');
+    const container = document.createElement('span');
     container.id = 'cde-floating-menu';
-    pageTitle.appendChild(container);
+    pageTitle.parentNode.appendChild(container);
     createRoot(container).render(<RightMenu />);
   } else {
     setTimeout(setFloatingRightMenu, 100);
@@ -157,7 +156,7 @@ if (pageInfo[0].startsWith('bug')) {
     if (!config.isOnlineMessagesEnabled()) {
       setTimeout(initlogObserver, 1000);
     }
-    if (config.isFloatingRightMenu()) {
+    if (config.isGlobalFloatingMenu() || config.isGameFloatingMenu(gameName)) {
       setFloatingRightMenu();
     }
 

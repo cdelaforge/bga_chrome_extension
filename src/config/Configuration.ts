@@ -27,6 +27,7 @@ class Configuration {
   _customConfig: {
     games: Game[],
     disabled: string[],
+    floating: string[],
     onlineMessages?: boolean,
     floatingRightMenu?: boolean,
     devTemplates?: Template[]
@@ -35,7 +36,7 @@ class Configuration {
 
   constructor() {
     this._defConfig = { games: defaultGames };
-    this._customConfig = { games: [], disabled: [] };
+    this._customConfig = { games: [], disabled: [], floating: [] };
     this._config = { games: [] };
   }
 
@@ -46,6 +47,9 @@ class Configuration {
     }
     if (!this._customConfig.disabled) {
       this._customConfig.disabled = [];
+    }
+    if (!this._customConfig.floating) {
+      this._customConfig.floating = [];
     }
     this.merge();
   }
@@ -109,6 +113,20 @@ class Configuration {
     return !this._customConfig.disabled.includes(name);
   }
 
+  setGameFloatingMenu(name: string, enable: boolean) {
+    this._customConfig.floating = this._customConfig.floating.filter(n => n !== name);
+
+    if (enable) {
+      this._customConfig.floating.push(name);
+    }
+
+    chrome.storage.sync.set({ floating: this._customConfig.floating });
+  }
+
+  isGameFloatingMenu(name: string) {
+    return this._customConfig.floating.includes(name);
+  }
+
   setOnlineMessagesEnabled(enable: boolean) {
     this._customConfig.onlineMessages = enable;
     chrome.storage.sync.set({ onlineMessages: enable });
@@ -118,13 +136,13 @@ class Configuration {
     return this._customConfig.onlineMessages || false;
   }
 
-  setFloatingRightMenu(enable: boolean) {
+  setGlobalFloatingMenu(enable: boolean) {
     this._customConfig.floatingRightMenu = enable;
     chrome.storage.sync.set({ floatingRightMenu: enable });
   }
 
-  isFloatingRightMenu() {
-    return false; //this._customConfig.floatingRightMenu !== false;
+  isGlobalFloatingMenu() {
+    return this._customConfig.floatingRightMenu === true;
   }
 
   listTemplates() {

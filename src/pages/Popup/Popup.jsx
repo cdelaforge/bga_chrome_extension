@@ -10,7 +10,7 @@ const BGA_URL = 'https://boardgamearena.com/';
 const config = new Configuration();
 
 const Header = styled.div`
-  width: 500px;
+  width: 600px;
   font-size: 2em;
   display: flex;
   align-items: center;
@@ -38,6 +38,14 @@ const Footer = styled.div`
   line-height: 24px;
 `;
 
+const Label = styled.span`
+  color: #000000;
+`;
+
+const LabelGrey = styled.span`
+  color: #D3D3D3;
+`;
+
 const Popup = () => {
   const [url, setUrl] = useState(undefined);
   const [gameName, setGameName] = useState();
@@ -45,7 +53,8 @@ const Popup = () => {
   const [gameConfig, setGameConfig] = useState();
   const [activated, setActivated] = useState(true);
   const [dispMessage, setDispMessage] = useState(false);
-  const [floatingMenu, setFloatingMenu] = useState(false);
+  const [floatingMenuGlobal, setFloatingMenuGlobal] = useState(false);
+  const [floatingMenuGame, setFloatingMenuGame] = useState(false);
   const [modification, setModification] = useState(false);
 
   useEffect(() => {
@@ -60,7 +69,7 @@ const Popup = () => {
 
       config.init().then(() => {
         setDispMessage(config.isOnlineMessagesEnabled());
-        setFloatingMenu(config.isFloatingRightMenu());
+        setFloatingMenuGlobal(config.isGlobalFloatingMenu());
         setGamesList(config.getGamesList());
       }).error(() => setGamesList([]));
     }
@@ -74,6 +83,7 @@ const Popup = () => {
 
       if (isNumber(params[0])) {
         setGameName(params[1]);
+        setFloatingMenuGame(config.isGameFloatingMenu(params[1]));
       }
     }
   }, [url]);
@@ -88,7 +98,7 @@ const Popup = () => {
     }
   }, [gamesList, gameName]);
 
-  const toggleActivated = () => {
+  const toggleLeftMenu = () => {
     setActivated(!activated);
     setModification(true);
     config.setGameEnabled(gameName, !activated);
@@ -100,10 +110,16 @@ const Popup = () => {
     config.setOnlineMessagesEnabled(!dispMessage);
   };
 
-  const toggleFloatingMenu = () => {
-    setFloatingMenu(!floatingMenu);
+  const toggleFloatingMenuGlobal = () => {
+    setFloatingMenuGlobal(!floatingMenuGlobal);
     setModification(true);
-    config.setFloatingRightMenu(!floatingMenu);
+    config.setGlobalFloatingMenu(!floatingMenuGlobal);
+  };
+
+  const toggleFloatingMenuGame = () => {
+    setFloatingMenuGame(!floatingMenuGame);
+    setModification(true);
+    config.setGameFloatingMenu(gameName, !floatingMenuGame);
   };
 
   const getDispStatusConfig = () => {
@@ -115,37 +131,46 @@ const Popup = () => {
     );
   }
 
-  const getFloatingMenuConfig = () => {
+  const getFloatingMenuConfigGlobal = () => {
     return (
       <>
-        <span>{chrome.i18n.getMessage("popupFloatingMenu")}</span>
-        <Switch onChange={toggleFloatingMenu} checked={floatingMenu} disabled={true} />
+        <Label>{chrome.i18n.getMessage("popupFloatingMenu")}</Label>
+        <Switch onChange={toggleFloatingMenuGlobal} checked={floatingMenuGlobal} />
       </>
     );
   }
 
-  const getBody = () => {
-    if (!gameName) {
+  const getFloatingMenuConfigForGame = () => {
+    if (gameName && !floatingMenuGlobal) {
       return (
         <>
-          <span>{chrome.i18n.getMessage("popupNotAGame")}</span>
-          <Switch checked={false} disabled={true} />
-        </>
-      );
-    }
-
-    if (gameConfig) {
-      return (
-        <>
-          <span>{chrome.i18n.getMessage("popupDisplayLeftMenu")}</span>
-          <Switch onChange={toggleActivated} checked={activated} />
+          <Label>{chrome.i18n.getMessage("popupFloatingMenuGame")}</Label>
+          <Switch onChange={toggleFloatingMenuGame} checked={floatingMenuGame} />
         </>
       );
     }
 
     return (
       <>
-        <span>{chrome.i18n.getMessage("popupNotAManagedGame")}</span>
+        <LabelGrey>{chrome.i18n.getMessage("popupFloatingMenuGame")}</LabelGrey>
+        <Switch checked={gameName && floatingMenuGlobal} disabled={true} />
+      </>
+    );
+  };
+
+  const getLeftMenuConfigForGame = () => {
+    if (gameConfig) {
+      return (
+        <>
+          <Label>{chrome.i18n.getMessage("popupDisplayLeftMenu")}</Label>
+          <Switch onChange={toggleLeftMenu} checked={activated} />
+        </>
+      );
+    }
+
+    return (
+      <>
+        <LabelGrey>{chrome.i18n.getMessage("popupDisplayLeftMenu")}</LabelGrey>
         <Switch checked={false} disabled={true} />
       </>
     );
@@ -153,7 +178,7 @@ const Popup = () => {
 
   const getFooter = () => {
     if (modification) {
-      return <span>{chrome.i18n.getMessage("popupReloadInstruction")}</span>;
+      return <Label>{chrome.i18n.getMessage("popupReloadInstruction")}</Label>;
     }
 
     return <></>;
@@ -166,8 +191,9 @@ const Popup = () => {
         <span>BGA Extension</span>
       </Header>
       <Body>{getDispStatusConfig()}</Body>
-      <Body>{getFloatingMenuConfig()}</Body>
-      <Body>{getBody()}</Body>
+      <Body>{getFloatingMenuConfigGlobal()}</Body>
+      <Body>{getFloatingMenuConfigForGame()}</Body>
+      <Body>{getLeftMenuConfigForGame()}</Body>
       <Footer>{getFooter()}</Footer>
     </>
   );

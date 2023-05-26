@@ -9,7 +9,10 @@
     "message": "Afficher l'activité des amis dans le journal de jeu"
   },
   "popupFloatingMenu": {
-    "message": "Afficher le journal de jeu et les panneaux des joueurs dans un menu flottant [désactivé pour le moment, la fonctionnalité sera de retour bientôt]"
+    "message": "Afficher le journal de jeu et les panneaux des joueurs dans un menu flottant pour tous les jeux"
+  },
+  "popupFloatingMenuGame": {
+    "message": "Afficher le journal de jeu et les panneaux des joueurs dans un menu flottant pour ce jeu"
   },
   "popupNotAGame": {
     "message": "La page actuelle n'est pas celle d'un jeu BGA"
