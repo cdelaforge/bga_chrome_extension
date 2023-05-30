@@ -40,7 +40,11 @@ const PlayerIcon = (props: PlayerIconProps) => {
     const element = document.getElementById(id);
     const titleBar = document.getElementById("page-title");
     const topBar = document.getElementById("topbar");
-    const zoom = (document.getElementById('page-content')?.style as any).zoom || 1;
+    let zoom = (document.getElementById('page-content')?.style as any).zoom || 1;
+
+    if (!Number(zoom)) {
+      zoom = 1;
+    }
 
     if (!element || !topBar || !titleBar) {
       return;

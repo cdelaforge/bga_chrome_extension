@@ -65,14 +65,9 @@ const SideMenu = (props: SideMenuProps) => {
     setZoomVisible(isZoomVisible);
   };
 
-  const onScroll = () => {
-    //console.log(window.scrollY + " " + zoom);
-  };
-
   useEffect(() => {
     setMenuPosition();
     window.addEventListener('resize', setMenuPosition);
-    window.addEventListener('scroll', onScroll);
     return () => {
       window.removeEventListener('resize', setMenuPosition);
     };

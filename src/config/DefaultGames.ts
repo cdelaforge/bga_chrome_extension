@@ -284,7 +284,7 @@ const defaultGames: Game[] = [
     "iconBorder": "#222222",
     "iconColor": "#222222",
     "iconShadow": "#000000",
-    "css": "#game_play_area { padding-left: 50px; }"
+    "css": ".desktop_version #game_play_area { padding-left: 50px; }"
   },
   {
     "name": "throughtheages",
@@ -298,8 +298,77 @@ const defaultGames: Game[] = [
     "iconBorder": "#222222",
     "iconColor": "#222222",
     "iconShadow": "#000000",
-    "css": "#game_play_area { padding-left: 50px; }"
-  }
+    "css": ".desktop_version #game_play_area { padding-left: 50px; }"
+  },
+  {
+    "name": "getonboard",
+    "position": "top",
+    "positionTop": "40vh",
+    "left": "0.5em",
+    "playerPanel": "player-table-{{player_id}}",
+    "playerPanelOffset": 5,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": "#jump-controls { display: none; }"
+  },
+  {
+    "name": "lumen",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "player-table-{{player_id}}",
+    "playerPanelOffset": 5,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": ".desktop_version #page-content { padding-left: 50px; }"
+  },
+  {
+    "name": "gardennation",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "player-table-{{player_id}}",
+    "playerPanelOffset": 5,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": ".desktop_version #page-content { padding-left: 50px; }"
+  },
+  {
+    "name": "tapestry",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "playerArea_{{player_id}}",
+    "playerPanelOffset": 5,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": ".desktop_version #page-content { padding-left: 50px; } #player_board_config { background-color: rgb(218, 211, 193); }"
+  },
+  {
+    "name": "resarcana",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "player_area_{{player_id}}",
+    "playerPanelOffset": 5,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": ".desktop_version #page-content { padding-left: 50px; }"
+  },
 ];
 
 export default defaultGames;
