@@ -32,6 +32,7 @@ const setFloatingRightMenu = () => {
       '#cde-floating-menu { display: inline; }',
       '#logs { margin-top: 0px; max-height: 100000px; }',
       '#seemorelogs { display: none !important; }',
+      '#go_to_next_table_inactive_player { margin-left: 5px }',
       '.mobile_version #cde-floating-menu-log { display: none; }',
     ].join(' ');
     document.head.appendChild(style);

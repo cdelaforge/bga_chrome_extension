@@ -25,5 +25,14 @@
   },
   "popupReloadInstruction": {
     "message": "Vous devez recharger la page pour prendre en compte les modifications"
+  },
+  "notifUpdateTitle": {
+    "message": "L'extension BGA a été mise à jour"
+  },
+  "notifUpdate_1_1_5": {
+    "message": "Petite nouveauté : vous pouvez afficher le journal de jeu et les panneaux des joueurs dans un menu flottant à droite de l'écran."
+  },
+  "notifUpdateSub_1_1_5": {
+    "message": "Cette fonctionnalité est activable en effectuant un clic sur l'icône de l'extension."
   }
 }
