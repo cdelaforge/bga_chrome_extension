@@ -173,7 +173,7 @@ const defaultGames: Game[] = [
     "iconBorder": "#222222",
     "iconColor": "#222222",
     "iconShadow": "#000000",
-    "css": ".desktop_version #spt-gameArea{ margin-left: 25px; }"
+    "css": ".desktop_version #spt-gameArea { margin-left: 25px; }"
   },
   {
     "name": "astra",
@@ -187,7 +187,7 @@ const defaultGames: Game[] = [
     "iconBorder": "#222222",
     "iconColor": "#222222",
     "iconShadow": "#000000",
-    "css": ".desktop_version #tbp{ margin-left: 50px; }"
+    "css": ".desktop_version #tbp { margin-left: 50px; }"
   },
   {
     "name": "earth",
@@ -214,7 +214,7 @@ const defaultGames: Game[] = [
     "iconBorder": "#222222",
     "iconColor": "#222222",
     "iconShadow": "#000000",
-    "css": ".desktop_version #gizmos_board{ margin-left: 50px; }"
+    "css": ".desktop_version #gizmos_board { margin-left: 50px; }"
   },
   {
     "name": "potionexplosion",
@@ -242,7 +242,63 @@ const defaultGames: Game[] = [
     "iconBorder": "#222222",
     "iconColor": "#222222",
     "iconShadow": "#ffffff",
-    "css": ".desktop_version #game_play_area{ margin-left: 50px; }"
+    "css": ".desktop_version #game_play_area { margin-left: 50px; }"
+  },
+  {
+    "name": "raceforthegalaxy",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "tableau_panel_{{player_id}}",
+    "playerPanelOffset": 5,
+    "iconBackground": "#a3adb7",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#ffffff",
+    "css": ".desktop_version #game_play_area { padding-left: 50px; }"
+  },
+  {
+    "name": "greatwesterntrail",
+    "position": "auto",
+    "positionTop": "150px",
+    "positionBottom": "auto",
+    "left": "6px",
+    "playerPanel": "player_area_{{player_id}}",
+    "playerPanelOffset": 5,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": ".desktop_version #game_play_area_wrap { padding-left: 50px; }"
+  },
+  {
+    "name": "throughtheagesnewstory",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "player_tableau_wrap_{{player_id}}",
+    "playerPanelOffset": 45,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": "#game_play_area { padding-left: 50px; }"
+  },
+  {
+    "name": "throughtheages",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "player_tableau_{{player_id}}",
+    "playerPanelOffset": 45,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": "#game_play_area { padding-left: 50px; }"
   }
 ];
 

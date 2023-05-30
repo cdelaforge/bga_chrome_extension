@@ -26,6 +26,15 @@
   "popupReloadInstruction": {
     "message": "Vous devez recharger la page pour prendre en compte les modifications"
   },
+  "notifInstallTitle": {
+    "message": "L'extension BGA a été correctement installée. Merci :)"
+  },
+  "notifInstallText": {
+    "message": "Toutes les fonctionnalités sont paramètrables en effectuant un clic sur l'icône de l'extension."
+  },
+  "notifInstallSub": {
+    "message": "(à droite de votre barre d'adresse)"
+  },
   "notifUpdateTitle": {
     "message": "L'extension BGA a été mise à jour"
   },

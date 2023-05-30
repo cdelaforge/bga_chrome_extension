@@ -26,6 +26,18 @@
   "popupReloadInstruction": {
     "message": "You must reload the page to reflect the changes"
   },
+  "notifInstallTitle": {
+    "message": "The BGA extension has been installed"
+  },
+  "notifInstallText": {
+    "message": "All display features can be configured by clicking on the extension icon."
+  },
+  "notifInstallSub": {
+    "message": "(on the right side of your address bar)"
+  },
+  "notifUpdateTitle": {
+    "message": "The BGA extension has been updated"
+  },
   "notifUpdate_1_1_5": {
     "message": "New feature: you can display the game log and player panels in a floating menu on the right of the screen."
   },

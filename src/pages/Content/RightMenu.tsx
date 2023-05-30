@@ -35,6 +35,18 @@ const RightMenu = () => {
     }
   };
 
+  const onClick = (evt: any) => {
+    try {
+      const eltId = evt.target.id || evt.target.parentNode.id;
+      if (eltId === 'cde-floating-menu-log') {
+        toggleLogVisible();
+      } else if (eltId === 'cde-floating-menu-score') {
+        toggleScoreVisible();
+      }
+    }
+    catch (error) { }
+  };
+
   useEffect(() => {
     if (scoreContent) {
       scoreContent.style.right = scoreVisible ? '5px' : '-500px';
@@ -52,17 +64,15 @@ const RightMenu = () => {
     setScoreVisible(false);
   }, []);
 
-  document.addEventListener('load', function () {
-    console.log('All assets are loaded')
-  })
-
   useEffect(() => {
     setMenuPosition();
     window.addEventListener('resize', setMenuPosition);
     window.addEventListener('scroll', setMenuPosition);
+    document.addEventListener('click', onClick);
     return () => {
       window.removeEventListener('resize', setMenuPosition);
       window.removeEventListener('scroll', setMenuPosition);
+      document.removeEventListener('click', onClick);
     };
   });
 
@@ -88,12 +98,12 @@ const RightMenu = () => {
 
   return (
     <>
-      <MenuItemContainer id='cde-floating-menu-log' className='bgabutton bgabutton_gray' onClick={toggleLogVisible} active={logVisible}>
+      <MenuItemContainer id='cde-floating-menu-log' className='bgabutton bgabutton_gray' active={logVisible}>
         <i className="fa fa-book"></i>
         {logVisible && <i className="fa fa-caret-up"></i>}
         {!logVisible && <i className="fa fa-caret-down"></i>}
       </MenuItemContainer>
-      <MenuItemContainer id='cde-floating-menu-score' className='bgabutton bgabutton_gray' onClick={toggleScoreVisible} active={scoreVisible}>
+      <MenuItemContainer id='cde-floating-menu-score' className='bgabutton bgabutton_gray' active={scoreVisible}>
         <i className="fa fa-star"></i>
         {scoreVisible && <i className="fa fa-caret-up"></i>}
         {!scoreVisible && <i className="fa fa-caret-down"></i>}

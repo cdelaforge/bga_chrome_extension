@@ -59,15 +59,15 @@ const Popup = () => {
 
   useEffect(() => {
     try {
-      chrome.tabs.query({ active: true, lastFocusedWindow: true }, tabs => {
-        if (tabs.length > 0) {
-          setUrl(tabs[0].url);
-        } else {
-          setUrl('other');
-        }
-      });
-
       config.init().then(() => {
+        chrome.tabs.query({ active: true, lastFocusedWindow: true }, tabs => {
+          if (tabs.length > 0) {
+            setUrl(tabs[0].url);
+          } else {
+            setUrl('other');
+          }
+        });
+
         setDispMessage(config.isOnlineMessagesEnabled());
         setFloatingMenuGlobal(config.isGlobalFloatingMenu());
         setGamesList(config.getGamesList());
@@ -80,7 +80,7 @@ const Popup = () => {
     if (url && url.startsWith(BGA_URL)) {
       const path = url.substring(BGA_URL.length).split('?')[0];
       const params = path.split('/');
-
+      console.log("url", url);
       if (isNumber(params[0])) {
         setGameName(params[1]);
         setFloatingMenuGame(config.isGameFloatingMenu(params[1]));
