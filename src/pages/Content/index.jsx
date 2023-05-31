@@ -11,51 +11,85 @@ const pageInfo = window.location.pathname.substring(1).split('/');
 let gameConfig;
 let playersData;
 
-const buildCss = () => {
-  if (gameConfig.css) {
+const buildLeftMenuCss = (enable) => {
+  const menuStyleId = 'cde-left-menu-style';
+
+  if (!enable) {
+    const style = document.getElementById(menuStyleId);
+    if (style) {
+      style.parentNode.removeChild(style);
+    }
+  } else if (gameConfig.css) {
     const style = document.createElement('style');
+    style.id = menuStyleId;
     style.innerHTML = gameConfig.css;
     document.head.appendChild(style);
   }
 };
 
-const setFloatingRightMenu = () => {
-  //const pageTitle = document.getElementById('page-title');
+const setFloatingRightMenu = (val) => {
   const pageTitle = document.getElementById('gotonexttable_wrap');
+  const menuContainerId = 'cde-floating-menu';
+  const menuStyleId = 'cde-floating-menu-style';
 
-  if (pageTitle) {
-    const style = document.createElement('style');
-    style.innerHTML = [
-      '#left-side { margin-right: 0px !important; }',
-      '#right-side-first-part, #right-side-second-part { position: fixed; right: -500px;  overflow-y: auto; overflow-x: hidden; z-index: 1000; }',
-      '#right-side-second-part { border: 1px solid black; outline: 1px solid white; background-color: rgb(235, 213, 189); width: 260px !important; }',
-      '#cde-floating-menu { display: inline; }',
-      '#logs { margin-top: 0px; max-height: 100000px; }',
-      '#seemorelogs { display: none !important; }',
-      '#go_to_next_table_inactive_player { margin-left: 5px }',
-      '.mobile_version #cde-floating-menu-log { display: none; }',
-    ].join(' ');
-    document.head.appendChild(style);
-
-    const container = document.createElement('span');
-    container.id = 'cde-floating-menu';
-    pageTitle.parentNode.appendChild(container);
-    createRoot(container).render(<RightMenu />);
-  } else {
-    setTimeout(setFloatingRightMenu, 100);
+  if (!pageTitle) {
+    setTimeout(() => setFloatingRightMenu(val), 100);
+    return;
   }
+
+  if (!val) {
+    const style = document.getElementById(menuStyleId);
+    const container = document.getElementById(menuContainerId);
+
+    if (style) {
+      style.parentNode.removeChild(style);
+    }
+    if (container) {
+      container.parentNode.removeChild(container);
+    }
+    return;
+  }
+
+  const style = document.createElement('style');
+  style.id = menuStyleId;
+  style.innerHTML = [
+    '#left-side { margin-right: 0px !important; }',
+    '#right-side-first-part, #right-side-second-part { position: fixed; right: -500px;  overflow-y: auto; overflow-x: hidden; z-index: 1000; }',
+    '#right-side-second-part { border: 1px solid black; outline: 1px solid white; background-color: rgb(235, 213, 189); width: 260px !important; }',
+    '#cde-floating-menu { display: inline; }',
+    '#logs { margin-top: 0px; max-height: 100000px; }',
+    '#seemorelogs { display: none !important; }',
+    '#go_to_next_table_inactive_player { margin-left: 5px }',
+    '.mobile_version #cde-floating-menu-log { display: none; }',
+  ].join(' ');
+  document.head.appendChild(style);
+
+  const container = document.createElement('span');
+  container.id = menuContainerId;
+  pageTitle.parentNode.appendChild(container);
+  createRoot(container).render(<RightMenu />);
 };
 
-const buildMenu = () => {
-  const container = document.createElement('div');
-  container.id = 'bga_extension_sidebar';
-  container.style.position = 'fixed';
-  container.style.left = gameConfig.left;
-  container.style.userSelect = 'none';
-  container.style.zIndex = 5;
-  document.body.appendChild(container);
+const buildLeftMenu = (enable) => {
+  const menuContainerId = 'bga_extension_sidebar';
 
-  createRoot(container).render(<SideMenu players={playersData} panel={gameConfig.playerPanel} gameConfig={gameConfig} />);
+  if (enable) {
+    const container = document.createElement('div');
+    container.id = menuContainerId;
+    container.style.position = 'fixed';
+    container.style.left = gameConfig.left;
+    container.style.userSelect = 'none';
+    container.style.zIndex = 5;
+    document.body.appendChild(container);
+
+    createRoot(container).render(<SideMenu players={playersData} panel={gameConfig.playerPanel} gameConfig={gameConfig} />);
+    return;
+  }
+
+  const container = document.getElementById(menuContainerId);
+  if (container) {
+    container.parentNode.removeChild(container);
+  }
 };
 
 const initlogObserver = () => {
@@ -81,7 +115,7 @@ const initlogObserver = () => {
   observer.observe(logsContainer, { childList: true, subtree: true });
 };
 
-const init = () => {
+const initLeftMenu = (leftMenuEnable) => {
   const elements = document.querySelectorAll("div.player-name");
 
   if (elements && elements.length) {
@@ -98,10 +132,10 @@ const init = () => {
       };
     });
 
-    buildCss();
-    buildMenu();
+    buildLeftMenuCss(leftMenuEnable);
+    buildLeftMenu(leftMenuEnable);
   } else {
-    setTimeout(init, 100);
+    setTimeout(() => initLeftMenu(leftMenuEnable), 100);
   }
 };
 
@@ -141,6 +175,101 @@ const initDevelopperUI = () => {
   setTimeout(initDevelopperUI, 500);
 };
 
+const buildOption = (title, text, inputId, inputValue, option1, option2, toggleFunc) => {
+  const container = document.createElement('div');
+  container.className = 'preference_choice';
+
+  const row = document.createElement('div');
+  row.className = 'row-data row-data-large';
+  container.appendChild(row);
+
+  const label = document.createElement('div');
+  label.className = 'row-label';
+  label.innerHTML = text;
+  row.appendChild(label);
+
+  const val = document.createElement('div');
+  val.className = 'row-value';
+  row.appendChild(val);
+
+  const input = document.createElement('select');
+  input.id = inputId;
+  input.className = 'preference_control';
+  input.addEventListener('click', (evt) => evt.stopPropagation());
+  input.addEventListener('change', toggleFunc);
+  val.appendChild(input)
+
+  if (inputValue === '1') {
+    input.insertAdjacentHTML('beforeend', '<option value="1" selected="selected">' + option1 + '</option>');
+    input.insertAdjacentHTML('beforeend', '<option value="0">' + option2 + '</option>');
+  } else {
+    input.insertAdjacentHTML('beforeend', '<option value="1">' + option1 + '</option>');
+    input.insertAdjacentHTML('beforeend', '<option value="0" selected="selected">' + option2 + '</option>');
+  }
+
+  title.parentNode.insertBefore(container, title.nextSibling);
+};
+
+const buildOptions = (config, gameName, gameManaged) => {
+  const histoInputs = [document.getElementById('preference_global_control_logsSecondColumn'), document.getElementById('preference_global_fontrol_logsSecondColumn')].filter(elt => !!elt);
+  const infobulleInput = document.getElementById('preference_control_200');
+  const mainMenu = document.getElementById('ingame_menu_content');
+  const settings = document.getElementById('pagesection_options');
+
+  if (!settings || !mainMenu || !infobulleInput || histoInputs.length !== 2) {
+    setTimeout(() => buildOptions(config, gameName, gameManaged), 500);
+    return;
+  }
+
+  const mainPrefTitle = mainMenu.getElementsByTagName('h2')[0];
+  const secondPrefTitle = settings.getElementsByTagName('h2')[0];
+
+  // Add an option for floating menu
+  const isFloatingMenuEnabled = config.isGameFloatingMenu(gameName);
+  const optionSelected = isFloatingMenuEnabled ? ' selected="selected"' : ' ';
+  const option = '<option value="2"' + optionSelected + '>Dans un menu flottant</option>'
+  const checkFloating = (evt) => {
+    if (evt.target.value === '2') {
+      setFloatingRightMenu(true);
+      config.setGameFloatingMenu(gameName, true);
+    } else {
+      setFloatingRightMenu(false);
+      config.setGameFloatingMenu(gameName, false);
+    }
+  };
+  histoInputs.forEach(input => {
+    input.insertAdjacentHTML('beforeend', option);
+    input.addEventListener('change', checkFloating);
+  });
+
+  // Add a parameter for left menu
+  if (gameManaged) {
+    const displayMenu = isFloatingMenuEnabled ? '1' : '0';
+    const toggleDisplayMenu = () => {
+      const enable = !config.isGameFloatingMenu(gameName);
+      config.setGameFloatingMenu(gameName, enable);
+      buildLeftMenu(enable);
+      buildLeftMenuCss(enable);
+      document.getElementById('cde_menu_1').value = enable ? '1' : '0';
+      document.getElementById('cde_menu_2').value = enable ? '1' : '0';
+    };
+    buildOption(mainPrefTitle, 'Display left menu', 'cde_menu_1', displayMenu, infobulleInput[0].text, infobulleInput[1].text, toggleDisplayMenu);
+    buildOption(secondPrefTitle, 'Display left menu', 'cde_menu_2', displayMenu, infobulleInput[0].text, infobulleInput[1].text, toggleDisplayMenu);
+  }
+
+  // Add a parameter for friends activity
+  const displayActivity = config.isOnlineMessagesEnabled() ? '1' : '0';
+  const toggleFriendsActivity = () => {
+    const enable = !config.isOnlineMessagesEnabled();
+    config.setOnlineMessagesEnabled(enable);
+    document.getElementById('cde_activity_1').value = enable ? '1' : '0';
+    document.getElementById('cde_activity_2').value = enable ? '1' : '0';
+  };
+  const displayActivityText = chrome.i18n.getMessage("popupDisplayStatusMessages")
+  buildOption(mainPrefTitle, displayActivityText, 'cde_activity_1', displayActivity, infobulleInput[0].text, infobulleInput[1].text, toggleFriendsActivity);
+  buildOption(secondPrefTitle, displayActivityText, 'cde_activity_2', displayActivity, infobulleInput[0].text, infobulleInput[1].text, toggleFriendsActivity);
+};
+
 if (pageInfo[0].startsWith('bug')) {
   initDevelopperUI();
 } else if (pageInfo.length >= 2 && isNumber(pageInfo[0])) {
@@ -158,23 +287,16 @@ if (pageInfo[0].startsWith('bug')) {
       setTimeout(initlogObserver, 1000);
     }
     if (config.isGlobalFloatingMenu() || config.isGameFloatingMenu(gameName)) {
-      setFloatingRightMenu();
+      setFloatingRightMenu(true);
     }
 
-    // left-side => margin-right: 0px
-    //right-side-first-part
-    //right-side-second-part
+    buildOptions(config, gameName, !!gameConfig);
 
     if (!gameConfig) {
       console.log(`[bga extension] No configuration found for game ${gameName}`);
       return;
     }
 
-    if (!config.isGameEnabled(gameName)) {
-      console.log(`[bga extension] Menu disabled for game ${gameName}`);
-      return;
-    }
-
-    init();
+    initLeftMenu(config.isGameEnabled(gameName));
   });
 };
