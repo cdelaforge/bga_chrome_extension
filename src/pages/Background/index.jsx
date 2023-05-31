@@ -13,7 +13,7 @@ chrome.runtime.onInstalled.addListener(details => {
         requireInteraction: true
       });
     } else if (details.reason === 'update' && version !== details.previousVersion) {
-      if (details.previousVersion !== '1.1.5' && details.previousVersion !== '1.1.6') {
+      if (details.previousVersion !== '1.1.5') {
         chrome.notifications.create('', {
           title: chrome.i18n.getMessage("notifUpdateTitle"),
           message: chrome.i18n.getMessage("notifUpdate_1_1_5"),
