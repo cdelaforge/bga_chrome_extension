@@ -99,7 +99,7 @@ class Configuration {
     return !!custGame;
   }
 
-  setGameEnabled(name: string, enable: boolean) {
+  setLeftMenuEnabled(name: string, enable: boolean) {
     this._customConfig.disabled = this._customConfig.disabled.filter(n => n !== name);
 
     if (!enable) {
@@ -109,7 +109,7 @@ class Configuration {
     chrome.storage.sync.set({ disabled: this._customConfig.disabled });
   }
 
-  isGameEnabled(name: string) {
+  isLeftMenuEnabled(name: string) {
     return !this._customConfig.disabled.includes(name);
   }
 

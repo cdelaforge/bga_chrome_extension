@@ -62,12 +62,17 @@ const PlayerIcon = (props: PlayerIconProps) => {
     });
   };
 
+  let textColor = '#000000';
+  try {
+    textColor = fontColorContrast(rgbHex(player.color));
+  } catch (error) { }
+
   return (
     <SideMenuItem onClick={scrollToPlayer}>
       <Avatar backColor={gameConfig.iconBackground} borderColor={gameConfig.iconBorder} shadowColor={gameConfig.iconShadow} onMouseOver={() => setOver(true)} onMouseOut={() => setOver(false)}>
         <img src={`${player.avatar}`} alt={player.name} />
       </Avatar>
-      <PlayerName backColor={player.color} borderColor={gameConfig.iconBorder} shadowColor={gameConfig.iconShadow} textColor={fontColorContrast(rgbHex(player.color))} hover={over}>{player.name}</PlayerName>
+      <PlayerName backColor={player.color} borderColor={gameConfig.iconBorder} shadowColor={gameConfig.iconShadow} textColor={textColor} hover={over}>{player.name}</PlayerName>
     </SideMenuItem>
   );
 };

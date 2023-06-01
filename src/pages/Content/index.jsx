@@ -37,37 +37,34 @@ const setFloatingRightMenu = (val) => {
     return;
   }
 
-  if (!val) {
-    const style = document.getElementById(menuStyleId);
-    const container = document.getElementById(menuContainerId);
+  let style = document.getElementById(menuStyleId);
+  let container = document.getElementById(menuContainerId);
 
-    if (style) {
-      style.parentNode.removeChild(style);
-    }
-    if (container) {
-      container.parentNode.removeChild(container);
-    }
-    return;
+  if (style && container && !val) {
+    style.parentNode.removeChild(style);
+    container.parentNode.removeChild(container);
   }
 
-  const style = document.createElement('style');
-  style.id = menuStyleId;
-  style.innerHTML = [
-    '#left-side { margin-right: 0px !important; }',
-    '#right-side-first-part, #right-side-second-part { position: fixed; right: -500px;  overflow-y: auto; overflow-x: hidden; z-index: 1000; }',
-    '#right-side-second-part { border: 1px solid black; outline: 1px solid white; background-color: rgb(235, 213, 189); width: 260px !important; }',
-    '#cde-floating-menu { display: inline; }',
-    '#logs { margin-top: 0px; max-height: 100000px; }',
-    '#seemorelogs { display: none !important; }',
-    '#go_to_next_table_inactive_player { margin-left: 5px }',
-    '.mobile_version #cde-floating-menu-log { display: none; }',
-  ].join(' ');
-  document.head.appendChild(style);
+  if (!style && !container && val) {
+    style = document.createElement('style');
+    style.id = menuStyleId;
+    style.innerHTML = [
+      '#left-side { margin-right: 0px !important; }',
+      '#right-side-first-part, #right-side-second-part { position: fixed; right: -500px;  overflow-y: auto; overflow-x: hidden; z-index: 1000; }',
+      '#right-side-second-part { border: 1px solid black; outline: 1px solid white; background-color: rgb(235, 213, 189); width: 260px !important; }',
+      '#cde-floating-menu { display: inline; }',
+      '#logs { margin-top: 0px; max-height: 100000px; }',
+      '#seemorelogs { display: none !important; }',
+      '#go_to_next_table_inactive_player { margin-left: 5px }',
+      '.mobile_version #cde-floating-menu-log { display: none; }',
+    ].join(' ');
+    document.head.appendChild(style);
 
-  const container = document.createElement('span');
-  container.id = menuContainerId;
-  pageTitle.parentNode.appendChild(container);
-  createRoot(container).render(<RightMenu />);
+    container = document.createElement('span');
+    container.id = menuContainerId;
+    pageTitle.parentNode.appendChild(container);
+    createRoot(container).render(<RightMenu />);
+  }
 };
 
 const buildLeftMenu = (enable) => {
@@ -225,36 +222,46 @@ const buildOptions = (config, gameName, gameManaged) => {
   const secondPrefTitle = settings.getElementsByTagName('h2')[0];
 
   // Add an option for floating menu
-  const isFloatingMenuEnabled = config.isGameFloatingMenu(gameName);
-  const optionSelected = isFloatingMenuEnabled ? ' selected="selected"' : ' ';
-  const option = '<option value="2"' + optionSelected + '>Dans un menu flottant</option>'
+  const optionFloatingGameSelected = config.isGameFloatingMenu(gameName) ? ' selected="selected"' : ' ';
+  const optionFloatingAlwaysSelected = config.isGlobalFloatingMenu() ? ' selected="selected"' : ' ';
+  const optionFloatingGame = '<option value="2"' + optionFloatingGameSelected + '>' + chrome.i18n.getMessage("optionFloatingGame") + '</option>'
+  const optionFloatingAlways = '<option value="3"' + optionFloatingAlwaysSelected + '>' + chrome.i18n.getMessage("optionFloatingAlways") + '</option>'
   const checkFloating = (evt) => {
-    if (evt.target.value === '2') {
+    if (evt.target.value === '3') {
+      setFloatingRightMenu(true);
+      config.setGameFloatingMenu(gameName, false);
+      config.setGlobalFloatingMenu(true);
+    } else if (evt.target.value === '2') {
       setFloatingRightMenu(true);
       config.setGameFloatingMenu(gameName, true);
+      config.setGlobalFloatingMenu(false);
     } else {
       setFloatingRightMenu(false);
       config.setGameFloatingMenu(gameName, false);
+      config.setGlobalFloatingMenu(false);
     }
   };
   histoInputs.forEach(input => {
-    input.insertAdjacentHTML('beforeend', option);
+    input.insertAdjacentHTML('beforeend', optionFloatingGame);
+    input.insertAdjacentHTML('beforeend', optionFloatingAlways);
     input.addEventListener('change', checkFloating);
+    input.addEventListener('click', (evt) => evt.stopPropagation());
   });
 
   // Add a parameter for left menu
   if (gameManaged) {
-    const displayMenu = isFloatingMenuEnabled ? '1' : '0';
+    const displayMenu = config.isLeftMenuEnabled(gameName) ? '1' : '0';
     const toggleDisplayMenu = () => {
-      const enable = !config.isGameFloatingMenu(gameName);
-      config.setGameFloatingMenu(gameName, enable);
+      const enable = !config.isLeftMenuEnabled(gameName);
+      config.setLeftMenuEnabled(gameName, enable);
       buildLeftMenu(enable);
       buildLeftMenuCss(enable);
       document.getElementById('cde_menu_1').value = enable ? '1' : '0';
       document.getElementById('cde_menu_2').value = enable ? '1' : '0';
     };
-    buildOption(mainPrefTitle, 'Display left menu', 'cde_menu_1', displayMenu, infobulleInput[0].text, infobulleInput[1].text, toggleDisplayMenu);
-    buildOption(secondPrefTitle, 'Display left menu', 'cde_menu_2', displayMenu, infobulleInput[0].text, infobulleInput[1].text, toggleDisplayMenu);
+    const displayLeftMenuText = chrome.i18n.getMessage("optionLeftMenu");
+    buildOption(mainPrefTitle, displayLeftMenuText, 'cde_menu_1', displayMenu, infobulleInput[0].text, infobulleInput[1].text, toggleDisplayMenu);
+    buildOption(secondPrefTitle, displayLeftMenuText, 'cde_menu_2', displayMenu, infobulleInput[0].text, infobulleInput[1].text, toggleDisplayMenu);
   }
 
   // Add a parameter for friends activity
@@ -265,7 +272,7 @@ const buildOptions = (config, gameName, gameManaged) => {
     document.getElementById('cde_activity_1').value = enable ? '1' : '0';
     document.getElementById('cde_activity_2').value = enable ? '1' : '0';
   };
-  const displayActivityText = chrome.i18n.getMessage("popupDisplayStatusMessages")
+  const displayActivityText = chrome.i18n.getMessage("optionFriendsActivity");
   buildOption(mainPrefTitle, displayActivityText, 'cde_activity_1', displayActivity, infobulleInput[0].text, infobulleInput[1].text, toggleFriendsActivity);
   buildOption(secondPrefTitle, displayActivityText, 'cde_activity_2', displayActivity, infobulleInput[0].text, infobulleInput[1].text, toggleFriendsActivity);
 };
@@ -290,14 +297,13 @@ if (pageInfo[0].startsWith('bug')) {
       setFloatingRightMenu(true);
     }
 
-    // tempo
-    //buildOptions(config, gameName, !!gameConfig);
+    buildOptions(config, gameName, !!gameConfig);
 
     if (!gameConfig) {
       console.log(`[bga extension] No configuration found for game ${gameName}`);
       return;
     }
 
-    initLeftMenu(config.isGameEnabled(gameName));
+    initLeftMenu(config.isLeftMenuEnabled(gameName));
   });
 };

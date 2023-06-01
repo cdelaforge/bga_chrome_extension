@@ -93,7 +93,7 @@ const Popup = () => {
       const currentGame = gamesList.find(g => g.name === gameName);
       if (currentGame) {
         setGameConfig(currentGame);
-        setActivated(config.isGameEnabled(gameName));
+        setActivated(config.isLeftMenuEnabled(gameName));
       }
     }
   }, [gamesList, gameName]);
@@ -101,7 +101,7 @@ const Popup = () => {
   const toggleLeftMenu = () => {
     setActivated(!activated);
     setModification(true);
-    config.setGameEnabled(gameName, !activated);
+    config.setLeftMenuEnabled(gameName, !activated);
   };
 
   const toggleDispMessage = () => {

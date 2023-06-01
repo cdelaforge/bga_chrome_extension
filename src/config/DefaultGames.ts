@@ -369,6 +369,48 @@ const defaultGames: Game[] = [
     "iconShadow": "#000000",
     "css": ".desktop_version #page-content { padding-left: 50px; }"
   },
+  {
+    "name": "innovation",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "player_{{player_id}}",
+    "playerPanelOffset": 5,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": ".desktop_version .player { margin-left: 50px; }"
+  },
+  {
+    "name": "railroadink",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "player-area-{{player_id}}",
+    "playerPanelOffset": 5,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": ".desktop_version #all-players { padding-left: 50px; }"
+  },
+  {
+    "name": "viticulture",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "playerboard_row_{{player_id}}",
+    "playerPanelOffset": 5,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": ".desktop_version #vit_game { padding-left: 50px; }"
+  },
 ];
 
 export default defaultGames;

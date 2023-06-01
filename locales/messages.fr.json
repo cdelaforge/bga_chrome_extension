@@ -26,22 +26,16 @@
   "popupReloadInstruction": {
     "message": "Vous devez recharger la page pour prendre en compte les modifications"
   },
-  "notifInstallTitle": {
-    "message": "L'extension BGA a été correctement installée. Merci :)"
+  "optionFriendsActivity": {
+    "message": "Activité des amis dans le journal de jeu"
   },
-  "notifInstallText": {
-    "message": "Toutes les fonctionnalités sont paramètrables en effectuant un clic sur l'icône de l'extension."
+  "optionLeftMenu": {
+    "message": "Naviguer entre les plateaux des joueurs"
   },
-  "notifInstallSub": {
-    "message": "(à droite de votre barre d'adresse)"
+  "optionFloatingGame": {
+    "message": "Dans un menu flottant (uniquement pour ce jeu)"
   },
-  "notifUpdateTitle": {
-    "message": "L'extension BGA a été mise à jour"
-  },
-  "notifUpdate_1_1_5": {
-    "message": "Petite nouveauté : vous pouvez afficher le journal de jeu et les panneaux des joueurs dans un menu flottant à droite de l'écran."
-  },
-  "notifUpdateSub_1_1_5": {
-    "message": "Cette fonctionnalité est activable en effectuant un clic sur l'icône de l'extension."
+  "optionFloatingAlways": {
+    "message": "Dans un menu flottant (pour tous les jeux)"
   }
 }
