@@ -290,7 +290,8 @@ if (pageInfo[0].startsWith('bug')) {
       setFloatingRightMenu(true);
     }
 
-    buildOptions(config, gameName, !!gameConfig);
+    // tempo
+    //buildOptions(config, gameName, !!gameConfig);
 
     if (!gameConfig) {
       console.log(`[bga extension] No configuration found for game ${gameName}`);

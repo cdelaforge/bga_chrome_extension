@@ -5,8 +5,7 @@
   "default_locale": "en",
   "options_page": "options.html",
   "permissions": [
-    "storage",
-    "notifications"
+    "storage"
   ],
   "background": {
     "service_worker": "background.bundle.js",
