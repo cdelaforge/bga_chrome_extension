@@ -77,7 +77,7 @@ const Options = (props: { config: Configuration }) => {
   const [text, setText] = useState("");
 
   const serialize = (game: Game) => {
-    return JSON.stringify(game, ['name', 'position', 'positionTop', 'positionBottom', 'left', 'playerPanel', 'playerPanelOffset', 'iconBackground', 'iconBorder', 'iconColor', 'iconShadow', 'css'], 2);
+    return JSON.stringify(game, ['name', 'position', 'positionTop', 'positionBottom', 'left', 'playerPanel', 'playerPanelOffset', 'iconBackground', 'iconBorder', 'iconColor', 'iconShadow', 'customZoomContainer', 'css'], 2);
   };
 
   useEffect(() => setText(serialize(selected)), [selected])

@@ -46,7 +46,7 @@
         "https://boardgamearena.com/20/*",
         "https://boardgamearena.com/bug*"
       ],
-      "run_at": "document_start",
+      "run_at": "document_idle",
       "js": [
         "contentScript.bundle.js"
       ]

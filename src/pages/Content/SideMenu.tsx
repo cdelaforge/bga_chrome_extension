@@ -100,9 +100,7 @@ const SideMenu = (props: SideMenuProps) => {
     });
   };
 
-  const toggleMenu = () => {
-    setVisible(!visible);
-  };
+  const toggleMenu = () => setVisible(!visible);
 
   return (
     <Container>

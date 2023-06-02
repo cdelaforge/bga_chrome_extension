@@ -116,7 +116,7 @@ const initLeftMenu = (leftMenuEnable) => {
   const elements = document.querySelectorAll("div.player-name");
 
   if (elements && elements.length) {
-    const playersIdList = Object.values(elements).map(d => parseInt(d.id.substring(12), 10));
+    const playersIdList = Object.values(elements).filter(d => d.id).map(d => parseInt(d.id.substring(12), 10)).filter(id => !isNaN(id));
 
     playersData = playersIdList.map(id => {
       const userLink = document.getElementById(`player_name_${id}`).childNodes[1];

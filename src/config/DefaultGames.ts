@@ -411,6 +411,35 @@ const defaultGames: Game[] = [
     "iconShadow": "#000000",
     "css": ".desktop_version #vit_game { padding-left: 50px; }"
   },
+  {
+    "name": "hadara",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "game_board_{{player_id}}",
+    "playerPanelOffset": 10,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "customZoomContainer": "pagesection_gameview",
+    "css": ".desktop_version #page-content { padding-left: 50px; }"
+  },
+  {
+    "name": "gogoa",
+    "position": "auto",
+    "positionTop": "75px",
+    "positionBottom": "auto",
+    "left": "0.5em",
+    "playerPanel": "goa-holder-{{player_id}}",
+    "playerPanelOffset": 5,
+    "iconBackground": "#ebd5bd",
+    "iconBorder": "#222222",
+    "iconColor": "#222222",
+    "iconShadow": "#000000",
+    "css": "#page-title { width: 100% !important } .desktop_version #page-content { padding-left: 50px; }"
+  }
 ];
 
 export default defaultGames;
