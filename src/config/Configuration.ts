@@ -7,6 +7,8 @@ export interface Game {
   positionTop?: string,
   positionBottom?: string,
   left: string,
+  boardPanel?: string;
+  boardPanelOffset?: number;
   playerPanel: string,
   playerPanelOffset: number,
   iconBackground: string,

@@ -3,13 +3,30 @@ import styled from "styled-components";
 
 import Configuration, { Game } from "../../config/Configuration";
 
+const Main = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const GameConfigArea = styled.div`
+  border: 1px solid #aaaaaa;
+  border-radius: 8px;
+  width: 860px;
+  height: 560px;
+  display: flex;
+  flex-flow: column;
+  gap: 1em;
+`;
+
 const Title = styled.div`
   width: 100%;
   font-size: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1em;
+  padding-top: 1em;
 `;
 
 const Container = styled.div`
@@ -27,9 +44,9 @@ const ColContainer = styled.div`
 `;
 
 const RowContainer = styled.div`
-display: flex;
-flex-flow: row;
-gap: 0.5em;
+  display: flex;
+  flex-flow: row;
+  gap: 0.5em;
 `;
 
 const GameListContainer = styled.div`
@@ -48,7 +65,7 @@ const GameItem = styled.div<{ selected: boolean }>`
   line-height: 24px;
   padding-left: 1em;
   cursor: pointer;
-  ${(props) => props.selected ? 'background: #aaaafa;' : ''}
+  ${(props) => props.selected ? 'background: #c0c4d1;' : ''}
 `;
 
 const GameConfigContainer = styled.div`
@@ -69,6 +86,11 @@ const TextArea = styled.textarea`
   outline: none !important;
 `;
 
+const Warning = styled.div`
+  padding-right: 2em;
+  text-align: right;
+`;
+
 const Options = (props: { config: Configuration }) => {
   const { config } = props;
   const [list, setList] = useState<Game[]>(config.getGamesList());
@@ -77,7 +99,7 @@ const Options = (props: { config: Configuration }) => {
   const [text, setText] = useState("");
 
   const serialize = (game: Game) => {
-    return JSON.stringify(game, ['name', 'position', 'positionTop', 'positionBottom', 'left', 'playerPanel', 'playerPanelOffset', 'iconBackground', 'iconBorder', 'iconColor', 'iconShadow', 'customZoomContainer', 'css'], 2);
+    return JSON.stringify(game, ['name', 'position', 'positionTop', 'positionBottom', 'left', 'boardPanel', 'boardPanelOffset', 'playerPanel', 'playerPanelOffset', 'iconBackground', 'iconBorder', 'iconColor', 'iconShadow', 'customZoomContainer', 'css'], 2);
   };
 
   useEffect(() => setText(serialize(selected)), [selected])
@@ -113,25 +135,30 @@ const Options = (props: { config: Configuration }) => {
   const couldDelete = isCustomized && !isDefault;
 
   return (
-    <>
-      <Title>Game Settings</Title>
-      <Container>
-        <GameListContainer>
-          <GameList>{list.map((g, i) => <GameItem key={`game_${i}`} selected={selected.name === g.name} onClick={() => setSelected(g)}>{g.name}</GameItem>)}</GameList>
-        </GameListContainer>
-        <ColContainer>
-          <GameConfigContainer>
-            <TextArea value={text} onChange={(evt) => setText(evt.target.value)} />
-          </GameConfigContainer>
-          <RowContainer>
-            <button style={{ width: '100px' }} onClick={duplicate}>Duplicate</button>
-            <button disabled={!couldReset} style={{ width: '100px' }} onClick={reset}>Reset</button>
-            <button disabled={!couldDelete} style={{ width: '100px' }} onClick={reset}>Delete</button>
-            <button disabled={!changed} style={{ width: '100px' }} onClick={save}>Save</button>
-          </RowContainer>
-        </ColContainer>
-      </Container>
-    </>
+    <Main>
+      <GameConfigArea>
+        <Title>Navigation between players' boards - Managed games list</Title>
+        <Container>
+          <GameListContainer>
+            <GameList>{list.map((g, i) => <GameItem key={`game_${i}`} selected={selected.name === g.name} onClick={() => setSelected(g)}>{g.name}</GameItem>)}</GameList>
+          </GameListContainer>
+          <ColContainer>
+            <GameConfigContainer>
+              <TextArea value={text} onChange={(evt) => setText(evt.target.value)} />
+            </GameConfigContainer>
+            <RowContainer>
+              <button style={{ width: '100px' }} onClick={duplicate}>Duplicate</button>
+              <button disabled={!couldReset} style={{ width: '100px' }} onClick={reset}>Reset</button>
+              <button disabled={!couldDelete} style={{ width: '100px' }} onClick={reset}>Delete</button>
+              <button disabled={!changed} style={{ width: '100px' }} onClick={save}>Save</button>
+            </RowContainer>
+          </ColContainer>
+        </Container>
+        <Warning>
+          Warning: only change the configuration on this screen if you really know what you're doing ;)
+        </Warning>
+      </GameConfigArea>
+    </Main>
   );
 };
 
