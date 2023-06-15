@@ -80,7 +80,7 @@ const Popup = () => {
     if (url && url.startsWith(BGA_URL)) {
       const path = url.substring(BGA_URL.length).split('?')[0];
       const params = path.split('/');
-      console.log("url", url);
+
       if (isNumber(params[0])) {
         setGameName(params[1]);
         setFloatingMenuGame(config.isGameFloatingMenu(params[1]));

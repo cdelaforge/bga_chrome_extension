@@ -43,6 +43,9 @@ const setFloatingRightMenu = (val) => {
   if (style && container && !val) {
     style.parentNode.removeChild(style);
     container.parentNode.removeChild(container);
+
+    document.getElementById('right-side-first-part').style.maxHeight = 'initial';
+    document.getElementById('right-side-second-part').style.maxHeight = 'initial';
   }
 
   if (!style && !container && val) {
@@ -76,7 +79,7 @@ const buildLeftMenu = (enable) => {
     container.style.position = 'fixed';
     container.style.left = gameConfig.left;
     container.style.userSelect = 'none';
-    container.style.zIndex = 5;
+    container.style.zIndex = 1000;
     document.body.appendChild(container);
 
     createRoot(container).render(<SideMenu players={playersData} panel={gameConfig.playerPanel} gameConfig={gameConfig} />);
@@ -129,6 +132,8 @@ const initLeftMenu = (leftMenuEnable) => {
       };
     });
 
+    console.log('[bga extension] players data', playersData);
+
     buildLeftMenuCss(leftMenuEnable);
     buildLeftMenu(leftMenuEnable);
   } else {
@@ -137,6 +142,11 @@ const initLeftMenu = (leftMenuEnable) => {
 };
 
 const initDevelopperUI = () => {
+  if (document.getElementById("cde_bga_ext")) {
+    console.log('[bga extension] extension is deprecated => disabled');
+    return;
+  }
+
   if (document.getElementById('last_reports') || document.getElementById('ext_templates')) {
     // display of reports list, or templates list already displayed, nothing to do
     setTimeout(initDevelopperUI, 500);
@@ -162,11 +172,11 @@ const initDevelopperUI = () => {
 
     const reportName = document.getElementById('report_game_table').firstChild.innerText;
     const pos = reportName.lastIndexOf('#');
-    const gameName = reportName.substring(0, pos - 1).split();
+    const gameName = reportName.substring(0, pos - 1).trim();
 
     console.log(`[bga extension] this is a report for '${gameName}'`);
 
-    createRoot(container).render(<Templates game={gameName} />);
+    createRoot(container).render(<Templates gameName={gameName} />);
   }
 
   setTimeout(initDevelopperUI, 500);
@@ -278,13 +288,18 @@ const buildOptions = (config, gameName, gameManaged) => {
 };
 
 if (pageInfo[0].startsWith('bug')) {
-  initDevelopperUI();
+  setTimeout(initDevelopperUI, 1000);
 } else if (pageInfo.length >= 2 && isNumber(pageInfo[0])) {
   const gameName = pageInfo[1];
   const config = new Configuration();
 
   config.init().then(() => {
     gameConfig = config.getGameConfig(gameName);
+
+    if (document.getElementById("cde_bga_ext")) {
+      console.log('[bga extension] extension is deprecated => disabled');
+      return;
+    }
 
     const style = document.createElement('style');
     style.innerHTML = "#lrf-bga-extension { display: none; }";

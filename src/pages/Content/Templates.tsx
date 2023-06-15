@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Configuration, { Template } from "../../config/Configuration";
@@ -107,6 +108,13 @@ const TextArea = styled.textarea`
   height: 100px;
 `;
 
+const BigTextArea = styled.textarea`
+  width: 100%;
+  padding: 0.5em;
+  resize: none;
+  height: 400px;
+`;
+
 const Check = styled.input`
   position: absolute;
   top: 16px;
@@ -126,7 +134,10 @@ interface TemplatesProps {
 
 const Templates = (props: TemplatesProps) => {
   const [configMode, setConfigMode] = useState(false);
+  const [plainMode, setPlainMode] = useState(false);
   const [templates, setTemplates] = useState<Template[]>();
+  const [jsonTemplates, setJsonTemplates] = useState<string>();
+  const [jsonError, setJsonError] = useState(false);
 
   useEffect(() => {
     try {
@@ -137,8 +148,19 @@ const Templates = (props: TemplatesProps) => {
     catch (error) { }
   }, []);
 
-  const toggleConfig = () => setConfigMode(!configMode);
-  const getTemplates = () => templates ? templates.filter(t => [props.gameName, 'all'].includes(t.game)) : [];
+  useEffect(() => setJsonTemplates(JSON.stringify(templates, ['name', 'text', 'game'], 2)), [templates]);
+
+  const toggleConfig = () => {
+    if (plainMode) {
+      if (jsonTemplates) {
+        const updatedTemplates = JSON.parse(jsonTemplates);
+        setTemplates(config.saveTemplates(updatedTemplates));
+      }
+      setPlainMode(false);
+    }
+    setConfigMode(!configMode);
+  }
+  const getTemplates = () => templates ? templates.filter(t => [props.gameName, 'all', undefined].includes(t.game)) : [];
 
   const addTemplate = () => {
     setTemplates(config.addTemplate({ name: 'my sentence name', text: 'my sentence text', game: props.gameName }));
@@ -189,7 +211,7 @@ const Templates = (props: TemplatesProps) => {
           <SentenceName><Input value={t.name} onChange={(evt) => updateTemplate(evt.target.value as string, t.text, t.game)} /></SentenceName>
           <SentenceText><TextArea value={t.text} onChange={(evt) => updateTemplate(t.name, evt.target.value as string, t.game)} /></SentenceText>
           <SentenceGame>
-            <Check type='checkbox' checked={t.game === 'all'} id={checkId} onChange={(evt) => updateTemplate(t.name, t.text, evt.target.checked ? 'all' : props.gameName)} />
+            <Check type='checkbox' checked={t.game === 'all' || t.game === undefined} id={checkId} onChange={(evt) => updateTemplate(t.name, t.text, evt.target.checked ? 'all' : props.gameName)} />
             <label htmlFor={checkId}>all games</label>
           </SentenceGame>
           <SentenceAction>
@@ -203,11 +225,40 @@ const Templates = (props: TemplatesProps) => {
   const existsTemplates = getTemplates().length > 0;
 
   if (configMode) {
+    const updateJsonTemplates = (val: string) => {
+      setJsonTemplates(val);
+      try {
+        const updatedTemplates = JSON.parse(val);
+        config.saveTemplates(updatedTemplates);
+        setJsonError(false);
+      }
+      catch (error) {
+        setJsonError(true);
+      }
+    }
+
+    const togglePlainMode = () => {
+      if (plainMode) {
+        try {
+          if (jsonTemplates) {
+            const updatedTemplates = JSON.parse(jsonTemplates);
+            setTemplates(config.saveTemplates(updatedTemplates));
+          }
+        }
+        catch (error) {
+          setJsonTemplates(JSON.stringify(templates, ['name', 'text', 'game'], 2));
+        }
+      }
+
+      setJsonError(false);
+      setPlainMode(!plainMode);
+    };
+
     return (
       <Row>
         <h3 className="pagesection__title" style={{ paddingLeft: '2em' }}>Template messages</h3>
         <BigContainer>
-          {existsTemplates && <Sentences>
+          {!plainMode && existsTemplates && <Sentences>
             <Sentence>
               <SentenceName><ColumnTitle>Name</ColumnTitle></SentenceName>
               <SentenceText><ColumnTitle>Text</ColumnTitle></SentenceText>
@@ -216,10 +267,13 @@ const Templates = (props: TemplatesProps) => {
             </Sentence>
             {getSentences()}
           </Sentences>}
-          {!existsTemplates && <span>No templates found</span>}
+          {!plainMode && !existsTemplates && <span>No templates found</span>}
+          {plainMode && <BigTextArea value={jsonTemplates} onChange={(evt) => updateJsonTemplates(evt.target.value)} />}
         </BigContainer>
         <HorizontalButtons>
-          <a className="bgabutton bgabutton_blue" onClick={addTemplate}>add new template</a>
+          {jsonError && <span style={{ color: 'red', padding: '16px 4px' }}>JSON Error!</span>}
+          {!plainMode && <a className="bgabutton bgabutton_blue" onClick={addTemplate}>add new template</a>}
+          <a className="bgabutton bgabutton_blue" onClick={togglePlainMode}>{plainMode ? 'normal display' : 'json display'}</a>
           <a className="bgabutton bgabutton_blue" onClick={toggleConfig}>close</a>
         </HorizontalButtons>
       </Row>

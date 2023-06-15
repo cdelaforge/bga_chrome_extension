@@ -6,7 +6,7 @@ import rgbHex from "rgb-hex";
 import { Game } from "../../config/Configuration";
 import Avatar from "./Avatar";
 import SideMenuItem from "./SideMenuItem";
-import { Player } from "./Misc";
+import { Player, getPlayerPanelId } from "./Misc";
 import BoardIcon from "./Icons/BoardIcon";
 
 const PlayerName = styled.div<{ backColor: string, borderColor: string, shadowColor: string, textColor: string, hover: boolean }>`
@@ -29,15 +29,17 @@ const PlayerName = styled.div<{ backColor: string, borderColor: string, shadowCo
 
 interface PlayerIconProps {
   player: Player,
-  gameConfig: Game
+  gameConfig: Game,
+  index: number
 }
 
 const PlayerIcon = (props: PlayerIconProps) => {
   const [over, setOver] = useState(false);
-  const { player, gameConfig } = props;
+  const { player, gameConfig, index } = props;
+  const eltId = player.fake ? player.id : getPlayerPanelId(gameConfig, player, index);
 
   const scrollToPlayer = () => {
-    const id = player.fake ? player.id : gameConfig.playerPanel.replace('{{player_id}}', player.id);
+    const id = eltId;
     const element = document.getElementById(id);
     const titleBar = document.getElementById("page-title");
     const topBar = document.getElementById("topbar");

@@ -8,7 +8,7 @@ import CloseIcon from "./Icons/CloseIcon";
 import SandwichIcon from "./Icons/SandwichIcon";
 import TopArrowIcon from "./Icons/TopArrowIcon";
 import Avatar from "./Avatar";
-import { Player } from "./Misc";
+import { Player, getPlayerPanelId } from "./Misc";
 
 const Container = styled.div`
   display: flex;
@@ -69,7 +69,7 @@ const SideMenu = (props: SideMenuProps) => {
   const scrollToTop = () => {
     const element = document.getElementById("page-content");
     const topBar = document.getElementById("topbar");
-    element && topBar && console.log(element.getBoundingClientRect().top + " " + document.body.getBoundingClientRect().top + " " + topBar.getBoundingClientRect().height);
+
     element && topBar && window.scrollTo({
       behavior: 'smooth',
       top: topBar.getBoundingClientRect().height + 2,
@@ -78,10 +78,27 @@ const SideMenu = (props: SideMenuProps) => {
 
   const toggleMenu = () => setVisible(!visible);
 
+  const checkPlayerPanels = () => {
+    if (gameConfig.playerPanel.indexOf('{{') < 0) {
+      const panels = Array.from(document.querySelectorAll(gameConfig.playerPanel));
+      players.forEach((p, index) => {
+        const playerPanel = panels.find(panel => panel.innerHTML === p.name);
+        if (playerPanel) {
+          if (!playerPanel.id) {
+            playerPanel.id = `bgaext_panel_${index}`;
+          }
+        }
+      });
+    }
+  };
+
   const getButtonsOrder = () => {
-    const toSort = players.map(p => {
-      const id = gameConfig.playerPanel.replace('{{player_id}}', p.id);
+    checkPlayerPanels();
+
+    const toSort = players.map((p, index) => {
+      const id = getPlayerPanelId(gameConfig, p, index);
       const element = document.getElementById(id);
+
       return {
         id,
         pos: element?.getBoundingClientRect().top || 0,
@@ -95,15 +112,16 @@ const SideMenu = (props: SideMenuProps) => {
       });
     }
 
-    toSort.sort((a, b) => a.pos < b.pos ? - 1 : 1);
+    toSort.sort((a, b) => a.pos === b.pos ? 0 : (a.pos < b.pos ? -1 : 1));
     setButtonsOrder(toSort.map(a => a.id).join('|'))
   };
 
   const getButtons = () => {
     const elements: Record<string, JSX.Element> = {};
 
-    players.forEach(p => {
-      elements[gameConfig.playerPanel.replace('{{player_id}}', p.id)] = <PlayerIcon key={`item_${p.id}`} player={p} gameConfig={gameConfig} />;
+    players.forEach((p, index) => {
+      const id = getPlayerPanelId(gameConfig, p, index);
+      elements[id] = <PlayerIcon key={`item_${p.id}`} player={p} index={index} gameConfig={gameConfig} />;
     });
 
     if (gameConfig.boardPanel) {
@@ -115,7 +133,7 @@ const SideMenu = (props: SideMenuProps) => {
         color: '#ffffff'
       }
 
-      elements[gameConfig.boardPanel] = <PlayerIcon key={gameConfig.boardPanel} player={fakePlayer} gameConfig={gameConfig} />;
+      elements[gameConfig.boardPanel] = <PlayerIcon key={gameConfig.boardPanel} player={fakePlayer} index={-1} gameConfig={gameConfig} />;
     }
 
     return buttonsOrder.split('|').map(id => elements[id]);
