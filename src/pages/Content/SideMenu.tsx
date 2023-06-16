@@ -101,6 +101,7 @@ const SideMenu = (props: SideMenuProps) => {
 
       return {
         id,
+        index,
         pos: element?.getBoundingClientRect().top || 0,
       }
     });
@@ -108,11 +109,12 @@ const SideMenu = (props: SideMenuProps) => {
     if (gameConfig.boardPanel) {
       toSort.push({
         id: gameConfig.boardPanel,
+        index: -1,
         pos: document.getElementById(gameConfig.boardPanel)?.getBoundingClientRect().top || 0
       });
     }
 
-    toSort.sort((a, b) => a.pos === b.pos ? 0 : (a.pos < b.pos ? -1 : 1));
+    toSort.sort((a, b) => a.pos === b.pos ? (a.index < b.index ? -1 : 1) : (a.pos < b.pos ? -1 : 1));
     setButtonsOrder(toSort.map(a => a.id).join('|'))
   };
 

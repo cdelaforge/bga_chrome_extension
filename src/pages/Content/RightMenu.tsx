@@ -104,7 +104,7 @@ const RightMenu = () => {
         {!logVisible && <i className="fa fa-caret-down" style={{ color: '#000000' }}></i>}
       </MenuItemContainer>
       <MenuItemContainer id='cde-floating-menu-score' className='bgabutton bgabutton_gray' active={scoreVisible}>
-        <i className="fa fa-star"></i>
+        <i className="fa fa-star" style={{ width: '14px', height: '14px' }}></i>
         {scoreVisible && <i className="fa fa-caret-up" style={{ color: '#000000' }}></i>}
         {!scoreVisible && <i className="fa fa-caret-down" style={{ color: '#000000' }}></i>}
       </MenuItemContainer>
