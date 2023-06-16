@@ -8,6 +8,7 @@ import Avatar from "./Avatar";
 import SideMenuItem from "./SideMenuItem";
 import { Player, getPlayerPanelId } from "./Misc";
 import BoardIcon from "./Icons/BoardIcon";
+import BottomArrowIcon from "./Icons/BottomArrowIcon";
 
 const PlayerName = styled.div<{ backColor: string, borderColor: string, shadowColor: string, textColor: string, hover: boolean }>`
   background-color: ${(props) => props.backColor};
@@ -37,6 +38,16 @@ const PlayerIcon = (props: PlayerIconProps) => {
   const [over, setOver] = useState(false);
   const { player, gameConfig, index } = props;
   const eltId = player.fake ? player.id : getPlayerPanelId(gameConfig, player, index);
+
+  const getOffset = () => {
+    if (!player.fake) {
+      return gameConfig.playerPanelOffset || 0;
+    }
+    if (player.avatar === 'board') {
+      return gameConfig.boardPanelOffset || 0;
+    }
+    return gameConfig.bottomPanelOffset || 0;
+  };
 
   const scrollToPlayer = () => {
     const id = eltId;
@@ -69,11 +80,9 @@ const PlayerIcon = (props: PlayerIconProps) => {
       setTimeout(scrollToPlayer, 500);
     }
 
-    const offset = player.fake ? gameConfig.boardPanelOffset : gameConfig.playerPanelOffset;
-
     window.scrollTo({
       behavior: 'smooth',
-      top: (((element.getBoundingClientRect().top - titleBar.getBoundingClientRect().height) * customZoom) - (offset / customZoom)) * zoom - document.body.getBoundingClientRect().top,
+      top: (((element.getBoundingClientRect().top - titleBar.getBoundingClientRect().height) * customZoom) - (getOffset() / customZoom)) * zoom - document.body.getBoundingClientRect().top,
     });
   };
 
@@ -87,12 +96,22 @@ const PlayerIcon = (props: PlayerIconProps) => {
     return '#000000';
   };
 
+  const getIcon = () => {
+    if (!player.fake) {
+      return <img src={`${player.avatar}`} alt={player.name} />;
+    }
+    if (player.avatar === 'board') {
+      return <BoardIcon />;
+    }
+    return <BottomArrowIcon />;
+  };
+
   return (
     <SideMenuItem onClick={scrollToPlayer}>
       <Avatar backColor={gameConfig.iconBackground} borderColor={gameConfig.iconBorder} shadowColor={gameConfig.iconShadow} onMouseOver={() => setOver(true)} onMouseOut={() => setOver(false)}>
-        {player.fake ? <BoardIcon /> : <img src={`${player.avatar}`} alt={player.name} />}
+        {getIcon()}
       </Avatar>
-      <PlayerName backColor={player.color} borderColor={gameConfig.iconBorder} shadowColor={gameConfig.iconShadow} textColor={getTextColor(player.color)} hover={over}>{player.name}</PlayerName>
+      <PlayerName backColor={player.color} borderColor={gameConfig.iconBorder} shadowColor={gameConfig.iconShadow} textColor={getTextColor(player.color)} hover={player.name && over}>{player.name}</PlayerName>
     </SideMenuItem>
   );
 };
