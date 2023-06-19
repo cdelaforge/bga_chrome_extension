@@ -129,7 +129,7 @@ const initLeftMenu = (leftMenuEnable) => {
         id,
         name: userLink.innerText,
         avatar: document.getElementById(`avatar_${id}`).src,
-        color: userLink.style.color,
+        color: getComputedStyle(userLink).color
       };
     });
 
