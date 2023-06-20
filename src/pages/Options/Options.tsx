@@ -20,13 +20,33 @@ const GameConfigArea = styled.div`
   gap: 1em;
 `;
 
+const LinkArea = styled.div`
+  display: flex;
+  flex-flow: row;
+  gap: 1em;
+  padding: 0.5em 0em 0em 2em;
+`;
+
+const Link = styled.a<{ selected: boolean }>`
+  line-height: 24px;
+  text-decoration: none;
+  padding: 0px 10px;
+
+  color: rgb(96, 107, 133);
+  font-size: 0.875rem;
+  ${props => props.selected ? 'border-bottom: 3px solid #0263e0; color: #0263e0;' : ''}
+`;
+
 const Title = styled.div`
-  width: 100%;
-  font-size: 2rem;
+  font-size: 1.5rem;
+  font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 1em;
+  border: 1px solid #aaaaaa;
+  box-sizing: border-box;
+  margin: 0em 1em;
+  line-height: 36px;
 `;
 
 const Container = styled.div`
@@ -56,6 +76,40 @@ const GameListContainer = styled.div`
   overflow: auto;
 `;
 
+const HiddenGameListContainer = styled.div`
+  max-height: 400px;
+  box-sizing: border-box;
+  border: 1px solid #aaaaaa;
+  margin: 0em 2em;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: start;
+  padding: 1em;
+`;
+
+const HiddenGame = styled.div`
+  position: relative;
+  margin-right: 5px;
+  margin-top: 5px;
+  font-size: 13px;
+  border: 1px solid #bcd1e1;
+  border-radius: 4px;
+  line-height: 30px;
+  color: #666666;
+  background: #cee7f9;
+  padding-left: 1em;
+  padding-right: 0.5em;
+  cursor: default;
+  height: 32px;
+  gap: 0.5em;
+  display: flex;
+`;
+
+const HiddenGameClose = styled.div`
+  font-weight: bold;
+  cursor: pointer;
+`;
+
 const GameList = styled.div`
   display: flex;
   flex-flow: column;
@@ -65,7 +119,7 @@ const GameItem = styled.div<{ selected: boolean }>`
   line-height: 24px;
   padding-left: 1em;
   cursor: pointer;
-  ${(props) => props.selected ? 'background: #c0c4d1;' : ''}
+  ${(props) => props.selected ? 'background: #cee7f9;' : ''}
 `;
 
 const GameConfigContainer = styled.div`
@@ -97,6 +151,8 @@ const Options = (props: { config: Configuration }) => {
   const [selected, setSelected] = useState(list[0]);
   const [changed, setChanged] = useState(false);
   const [text, setText] = useState("");
+  const [tabSelected, setTabSelected] = useState('hidden');
+  const [hiddenGames, setHiddenGames] = useState<string[]>(config.getHiddenGames());
 
   const serialize = (game: Game) => {
     return JSON.stringify(game, ['name', 'position', 'top', 'bottom', 'left', 'boardPanel', 'boardPanelOffset', 'playerPanel', 'playerPanelOffset', 'bottomPanel', 'bottomPanelOffset', 'iconBackground', 'iconBorder', 'iconColor', 'iconShadow', 'customZoomContainer', 'css', 'menuCss'], 2);
@@ -134,10 +190,28 @@ const Options = (props: { config: Configuration }) => {
   const couldReset = changed || (isCustomized && isDefault);
   const couldDelete = isCustomized && !isDefault;
 
-  return (
-    <Main>
-      <GameConfigArea>
-        <Title>Navigation between players' boards - Managed games list</Title>
+  const getHiddenConfiguration = () => {
+    return (
+      <>
+        <Title>{chrome.i18n.getMessage('optionHiddenTitle')}</Title>
+        <HiddenGameListContainer>
+          {!hiddenGames.length && <span>{chrome.i18n.getMessage('optionNoHiddenGames')}</span>}
+          {hiddenGames.length && hiddenGames.map((game, index) => (
+            <HiddenGame key={`game_${index}`}>
+              {game}
+              <HiddenGameClose onClick={() => setHiddenGames(config.displayGame(game))}>🗙</HiddenGameClose>
+            </HiddenGame>
+          ))}
+        </HiddenGameListContainer>
+        <Warning>{chrome.i18n.getMessage('optionHiddenGamesWarning')}</Warning>
+      </>
+    );
+  };
+
+  const getNavigationConfiguration = () => {
+    return (
+      <>
+        <Title>{chrome.i18n.getMessage('optionNavigationTitle')}</Title>
         <Container>
           <GameListContainer>
             <GameList>{list.map((g, i) => <GameItem key={`game_${i}`} selected={selected.name === g.name} onClick={() => setSelected(g)}>{g.name}</GameItem>)}</GameList>
@@ -147,16 +221,30 @@ const Options = (props: { config: Configuration }) => {
               <TextArea value={text} onChange={(evt) => setText(evt.target.value)} />
             </GameConfigContainer>
             <RowContainer>
-              <button style={{ width: '100px' }} onClick={duplicate}>Duplicate</button>
-              <button disabled={!couldReset} style={{ width: '100px' }} onClick={reset}>Reset</button>
-              <button disabled={!couldDelete} style={{ width: '100px' }} onClick={reset}>Delete</button>
-              <button disabled={!changed} style={{ width: '100px' }} onClick={save}>Save</button>
+              <button style={{ width: '100px' }} onClick={duplicate}>{chrome.i18n.getMessage('optionDuplicate')}</button>
+              <button disabled={!couldReset} style={{ width: '100px' }} onClick={reset}>{chrome.i18n.getMessage('optionReset')}</button>
+              <button disabled={!couldDelete} style={{ width: '100px' }} onClick={reset}>{chrome.i18n.getMessage('optionDelete')}</button>
+              <button disabled={!changed} style={{ width: '100px' }} onClick={save}>{chrome.i18n.getMessage('optionSave')}</button>
             </RowContainer>
           </ColContainer>
         </Container>
-        <Warning>
-          Warning: only change the configuration on this screen if you really know what you're doing ;)
-        </Warning>
+        <Warning>{chrome.i18n.getMessage('optionNavigationWarning')}</Warning>
+      </>
+    );
+  };
+
+  return (
+    <Main>
+      <GameConfigArea>
+        <LinkArea>
+          <Link href="#" selected={tabSelected === 'hidden'} onClick={() => setTabSelected('hidden')}>
+            {chrome.i18n.getMessage('optionHiddenTab')}
+          </Link>
+          <Link href="#" selected={tabSelected === 'navigation'} onClick={() => setTabSelected('navigation')}>
+            {chrome.i18n.getMessage('optionNavigationTab')}
+          </Link>
+        </LinkArea>
+        {tabSelected === 'hidden' ? getHiddenConfiguration() : getNavigationConfiguration()}
       </GameConfigArea>
     </Main>
   );

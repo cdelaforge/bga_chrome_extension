@@ -34,6 +34,7 @@ class Configuration {
   _customConfig: {
     games: Game[],
     disabled: string[],
+    hidden: string[],
     floating: string[],
     onlineMessages?: boolean,
     floatingRightMenu?: boolean,
@@ -61,7 +62,7 @@ class Configuration {
         }
       }) as Game[]
     };
-    this._customConfig = { games: [], disabled: [], floating: [] };
+    this._customConfig = { games: [], disabled: [], floating: [], hidden: [] };
     this._config = { games: [] };
   }
 
@@ -72,6 +73,9 @@ class Configuration {
     }
     if (!this._customConfig.disabled) {
       this._customConfig.disabled = [];
+    }
+    if (!this._customConfig.hidden) {
+      this._customConfig.hidden = [];
     }
     if (!this._customConfig.floating) {
       this._customConfig.floating = [];
@@ -208,6 +212,30 @@ class Configuration {
       chrome.storage.sync.set({ devTemplates: this._customConfig.devTemplates });
     }
     return this.listTemplates();
+  }
+
+  hideGame(name: string) {
+    this._customConfig.hidden = [...this._customConfig.hidden.filter(g => g !== name), name];
+    chrome.storage.sync.set({ hidden: this._customConfig.hidden });
+    return this.getHiddenGames();
+  }
+
+  displayGame(name: string) {
+    this._customConfig.hidden = [...this._customConfig.hidden.filter(g => g !== name)];
+    chrome.storage.sync.set({ hidden: this._customConfig.hidden });
+    return this.getHiddenGames();
+  }
+
+  getHiddenGames() {
+    return this._customConfig.hidden.sort();
+  }
+
+  getHiddenGamesListStyle() {
+    return this._customConfig.hidden.map(name => `div:has(> a[href="/gamepanel?game=${name}"]), div.bga-game-browser-carousel__block:has(> div > a[href="/gamepanel?game=${name}"]) { display: none; }`).join(' ');
+  }
+
+  getHiddenGamesLobbyStyle() {
+    return this._customConfig.hidden.map(name => `div.game_box_wrap:has(> div > div > div > a[href="/gamepanel?game=${name}"]) { display: none; }`).join(' ');
   }
 }
 

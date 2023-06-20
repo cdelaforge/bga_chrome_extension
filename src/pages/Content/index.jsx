@@ -116,6 +116,72 @@ const initlogObserver = () => {
   observer.observe(logsContainer, { childList: true, subtree: true });
 };
 
+const initGameLobby = (config) => {
+  const mainElt = document.querySelector('#main-content');
+
+  if (!mainElt) {
+    setTimeout(initGameLobby, 100);
+    return;
+  }
+
+  const hiddenStyleId = 'cde-hidden-games-style';
+  const style = document.createElement('style');
+  style.id = hiddenStyleId;
+  style.innerHTML = config.getHiddenGamesLobbyStyle();
+  document.head.appendChild(style);
+};
+
+const initGameListObserver = (config) => {
+  const mainElt = document.querySelector('#main-content');
+
+  if (!mainElt) {
+    setTimeout(initGameListObserver, 100);
+    return;
+  }
+
+  const hiddenStyleId = 'cde-hidden-games-style';
+  const style = document.createElement('style');
+  style.id = hiddenStyleId;
+  style.innerHTML = config.getHiddenGamesListStyle();
+  document.head.appendChild(style);
+
+  const updateHiddenGameStyle = () => {
+    style.innerHTML = config.getHiddenGamesListStyle();
+  };
+
+  updateHiddenGameStyle();
+
+  const hideGame = (name) => {
+    config.hideGame(name);
+    updateHiddenGameStyle();
+  };
+
+  const observer = new MutationObserver(() => {
+    const buttons = document.querySelectorAll('.bgabutton_blue[href*="/gamepanel?game="]');
+
+    buttons.forEach(but => {
+      const container = but.parentNode;
+
+      if (!container.lastChild.classList.contains('bgabutton_red')) {
+        but.style.minWidth = '100px';
+        container.style.boxShadow = 'none';
+
+        const removeBut = document.createElement('a');
+        removeBut.className = 'bgabutton bgabutton_red bga-button-inner flex-1 truncate';
+        removeBut.style.padding = '5px 0px 0px 10px';
+        removeBut.style.margin = '0px 0px 0px 5px';
+        removeBut.style.minWidth = '32px';
+        removeBut.innerHTML = '<div class="flex items-center"><div class="text-center"><i class="fa fa-trash"/></div></div>';
+        removeBut.onclick = () => hideGame(but.href.split('=')[1]);
+        container.appendChild(removeBut);
+      }
+    });
+
+  });
+
+  observer.observe(mainElt, { childList: true, subtree: true });
+};
+
 const initLeftMenu = (leftMenuEnable) => {
   const elements = document.querySelectorAll("div.player-name");
 
@@ -288,9 +354,9 @@ const buildOptions = (config, gameName, gameConfig) => {
   buildOption(secondPrefTitle, displayActivityText, 'cde_activity_2', displayActivity, infobulleInput[0].text, infobulleInput[1].text, toggleFriendsActivity);
 };
 
-if (pageInfo[0].startsWith('bug')) {
-  setTimeout(initDevelopperUI, 1000);
-} else if (pageInfo.length >= 2 && isNumber(pageInfo[0])) {
+console.log('[bga extension] page loading', pageInfo);
+
+if (pageInfo.length >= 2 && isNumber(pageInfo[0])) {
   const gameName = pageInfo[1];
   const config = new Configuration();
 
@@ -322,4 +388,33 @@ if (pageInfo[0].startsWith('bug')) {
 
     initLeftMenu(config.isLeftMenuEnabled(gameName));
   });
-};
+} else {
+  const links = [];
+
+  setInterval(function () {
+    document.querySelectorAll('a[href="/gamelist"]').forEach(elt => {
+      if (!links.includes(elt)) {
+        elt.addEventListener('click', (evt) => evt.stopPropagation());
+        links.push(elt);
+      }
+    });
+    document.querySelectorAll('a[href="/lobby"]').forEach(elt => {
+      if (!links.includes(elt)) {
+        elt.addEventListener('click', (evt) => evt.stopPropagation());
+        links.push(elt);
+      }
+    });
+  }, 1000);
+
+  if (pageInfo[0].startsWith('gamelist')) {
+    console.log('[bga extension] gamelist page');
+    const config = new Configuration();
+    config.init().then(() => initGameListObserver(config));
+  } else if (pageInfo[0].startsWith('lobby')) {
+    console.log('[bga extension] lobby page');
+    const config = new Configuration();
+    config.init().then(() => initGameLobby(config));
+  } else if (pageInfo[0].startsWith('bug')) {
+    setTimeout(initDevelopperUI, 1000);
+  }
+}
