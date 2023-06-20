@@ -77,12 +77,16 @@ const PlayerIcon = (props: PlayerIconProps) => {
     const currentPos = window.scrollY;
     const minTop = topBar.getBoundingClientRect().height + 20;
     if (currentPos < minTop) {
-      setTimeout(scrollToPlayer, 500);
+      window.scrollTo({ top: topBar.getBoundingClientRect().height + 20 });
+      setTimeout(scrollToPlayer, 50);
+      return;
     }
+
+    const decTitleBar = (getComputedStyle(titleBar).position === 'fixed') ? titleBar.getBoundingClientRect().height : 0;
 
     window.scrollTo({
       behavior: 'smooth',
-      top: (((element.getBoundingClientRect().top - titleBar.getBoundingClientRect().height) * customZoom) - (getOffset() / customZoom)) * zoom - document.body.getBoundingClientRect().top,
+      top: (((element.getBoundingClientRect().top - decTitleBar) * customZoom) - (getOffset() / customZoom)) * zoom - document.body.getBoundingClientRect().top,
     });
   };
 
