@@ -196,7 +196,7 @@ const Options = (props: { config: Configuration }) => {
         <Title>{chrome.i18n.getMessage('optionHiddenTitle')}</Title>
         <HiddenGameListContainer>
           {!hiddenGames.length && <span>{chrome.i18n.getMessage('optionNoHiddenGames')}</span>}
-          {hiddenGames.length && hiddenGames.map((game, index) => (
+          {hiddenGames.length > 0 && hiddenGames.map((game, index) => (
             <HiddenGame key={`game_${index}`}>
               {game}
               <HiddenGameClose onClick={() => setHiddenGames(config.displayGame(game))}>🗙</HiddenGameClose>

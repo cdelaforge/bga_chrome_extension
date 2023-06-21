@@ -41,6 +41,7 @@ class Configuration {
     devTemplates?: Template[]
   };
   _config: { games: Game[] };
+  _initialized: boolean;
 
   constructor() {
     this._defConfig = {
@@ -64,6 +65,7 @@ class Configuration {
     };
     this._customConfig = { games: [], disabled: [], floating: [], hidden: [] };
     this._config = { games: [] };
+    this._initialized = false;
   }
 
   async init() {
@@ -71,16 +73,14 @@ class Configuration {
     if (!this._customConfig.games) {
       this._customConfig.games = [];
     }
-    if (!this._customConfig.disabled) {
-      this._customConfig.disabled = [];
-    }
-    if (!this._customConfig.hidden) {
-      this._customConfig.hidden = [];
-    }
+    this._customConfig.disabled = this._customConfig.disabled?.filter(h => typeof h === 'string') || [];
+    this._customConfig.hidden = this._customConfig.hidden?.filter(h => typeof h === 'string') || [];
     if (!this._customConfig.floating) {
       this._customConfig.floating = [];
     }
+    this._customConfig.floatingRightMenu = this._customConfig.floatingRightMenu || false;
     this.merge();
+    this._initialized = true;
   }
 
   private merge() {
@@ -88,6 +88,14 @@ class Configuration {
     const defGames = this._defConfig.games.filter(g => !customNames.includes(g.name));
 
     this._config.games = [...defGames, ...this._customConfig.games];
+  }
+
+  isInitialized() {
+    return this._initialized;
+  }
+
+  export() {
+    return JSON.stringify(this._customConfig);
   }
 
   getGameConfig(game: string): Game | undefined {

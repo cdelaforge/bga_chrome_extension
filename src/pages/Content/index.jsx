@@ -5,9 +5,8 @@ import shouldFilter from '../../config/FilteredLogs';
 import SideMenu from './SideMenu';
 import RightMenu from './RightMenu';
 import Templates from './Templates';
-import { isNumber } from '../../helpers/Misc';
+import { isNumber, addLocationChangeListener } from '../../helpers/Misc';
 
-const pageInfo = window.location.pathname.substring(1).split('/');
 let gameConfig;
 let playersData;
 
@@ -116,6 +115,21 @@ const initlogObserver = () => {
   observer.observe(logsContainer, { childList: true, subtree: true });
 };
 
+const createHiddenGameStyle = (content) => {
+  const hiddenStyleId = 'cde-hidden-games-style';
+
+  let style = document.getElementById(hiddenStyleId);
+
+  if (!style) {
+    style = document.createElement('style');
+    style.id = hiddenStyleId;
+    document.head.appendChild(style);
+  }
+
+  style.innerHTML = content;
+  return style;
+};
+
 const initGameLobby = (config) => {
   const mainElt = document.querySelector('#main-content');
 
@@ -124,11 +138,7 @@ const initGameLobby = (config) => {
     return;
   }
 
-  const hiddenStyleId = 'cde-hidden-games-style';
-  const style = document.createElement('style');
-  style.id = hiddenStyleId;
-  style.innerHTML = config.getHiddenGamesLobbyStyle();
-  document.head.appendChild(style);
+  createHiddenGameStyle(config.getHiddenGamesLobbyStyle());
 };
 
 const initGameListObserver = (config) => {
@@ -139,17 +149,8 @@ const initGameListObserver = (config) => {
     return;
   }
 
-  const hiddenStyleId = 'cde-hidden-games-style';
-  const style = document.createElement('style');
-  style.id = hiddenStyleId;
-  style.innerHTML = config.getHiddenGamesListStyle();
-  document.head.appendChild(style);
-
-  const updateHiddenGameStyle = () => {
-    style.innerHTML = config.getHiddenGamesListStyle();
-  };
-
-  updateHiddenGameStyle();
+  const style = createHiddenGameStyle(config.getHiddenGamesListStyle());
+  const updateHiddenGameStyle = () => style.innerHTML = config.getHiddenGamesListStyle();
 
   const hideGame = (name) => {
     config.hideGame(name);
@@ -176,7 +177,6 @@ const initGameListObserver = (config) => {
         container.appendChild(removeBut);
       }
     });
-
   });
 
   observer.observe(mainElt, { childList: true, subtree: true });
@@ -208,15 +208,9 @@ const initLeftMenu = (leftMenuEnable) => {
   }
 };
 
-const initDevelopperUI = () => {
-  if (document.getElementById("cde_bga_ext")) {
-    console.log('[bga extension] extension is deprecated => disabled');
-    return;
-  }
-
+const initDevelopperUI = (config) => {
   if (document.getElementById('last_reports') || document.getElementById('ext_templates')) {
     // display of reports list, or templates list already displayed, nothing to do
-    setTimeout(initDevelopperUI, 500);
     return;
   }
 
@@ -225,7 +219,7 @@ const initDevelopperUI = () => {
 
   if (!butStatus || !reportArea || !reportArea.getBoundingClientRect().x) {
     console.log('[bga extension] page is loading...');
-    setTimeout(initDevelopperUI, 100);
+    setTimeout(() => initDevelopperUI(config), 100);
     return;
   }
 
@@ -243,10 +237,10 @@ const initDevelopperUI = () => {
 
     console.log(`[bga extension] this is a report for '${gameName}'`);
 
-    createRoot(container).render(<Templates gameName={gameName} />);
+    createRoot(container).render(<Templates config={config} gameName={gameName} />);
   }
 
-  setTimeout(initDevelopperUI, 500);
+  setTimeout(() => initDevelopperUI(config), 500);
 };
 
 const buildOption = (title, text, inputId, inputValue, option1, option2, toggleFunc) => {
@@ -354,19 +348,14 @@ const buildOptions = (config, gameName, gameConfig) => {
   buildOption(secondPrefTitle, displayActivityText, 'cde_activity_2', displayActivity, infobulleInput[0].text, infobulleInput[1].text, toggleFriendsActivity);
 };
 
-console.log('[bga extension] page loading', pageInfo);
+const manageLocationChange = (pathname) => {
+  console.log('[bga extension] load path', pathname);
 
-if (pageInfo.length >= 2 && isNumber(pageInfo[0])) {
-  const gameName = pageInfo[1];
-  const config = new Configuration();
+  const pageInfo = pathname.substring(1).split('/');
 
-  config.init().then(() => {
+  if (pageInfo.length >= 2 && isNumber(pageInfo[0])) {
+    const gameName = pageInfo[1];
     gameConfig = config.getGameConfig(gameName);
-
-    if (document.getElementById("cde_bga_ext")) {
-      console.log('[bga extension] extension is deprecated => disabled');
-      return;
-    }
 
     const style = document.createElement('style');
     style.innerHTML = "#lrf-bga-extension { display: none; }";
@@ -387,34 +376,36 @@ if (pageInfo.length >= 2 && isNumber(pageInfo[0])) {
     }
 
     initLeftMenu(config.isLeftMenuEnabled(gameName));
-  });
-} else {
-  const links = [];
-
-  setInterval(function () {
-    document.querySelectorAll('a[href="/gamelist"]').forEach(elt => {
-      if (!links.includes(elt)) {
-        elt.addEventListener('click', (evt) => evt.stopPropagation());
-        links.push(elt);
-      }
-    });
-    document.querySelectorAll('a[href="/lobby"]').forEach(elt => {
-      if (!links.includes(elt)) {
-        elt.addEventListener('click', (evt) => evt.stopPropagation());
-        links.push(elt);
-      }
-    });
-  }, 1000);
-
-  if (pageInfo[0].startsWith('gamelist')) {
-    console.log('[bga extension] gamelist page');
-    const config = new Configuration();
-    config.init().then(() => initGameListObserver(config));
+  } else if (pageInfo[0].startsWith('gamelist')) {
+    initGameListObserver(config);
   } else if (pageInfo[0].startsWith('lobby')) {
-    console.log('[bga extension] lobby page');
-    const config = new Configuration();
-    config.init().then(() => initGameLobby(config));
+    initGameLobby(config);
   } else if (pageInfo[0].startsWith('bug')) {
-    setTimeout(initDevelopperUI, 1000);
+    initDevelopperUI(config);
   }
-}
+};
+
+const config = new Configuration();
+
+config.init().then(() => {
+  if (document.getElementById("cde_bga_ext")) {
+    console.log('[bga extension] extension is deprecated => disabled');
+    return;
+  }
+
+  addLocationChangeListener(manageLocationChange);
+  manageLocationChange(window.location.pathname);
+});
+
+document.addEventListener('bga_ext_get_config', () => {
+  const exportConfig = () => {
+    if (config.isInitialized()) {
+      const jsonData = config.export();
+      console.log('[bga extension] export data from deprecated extension', jsonData);
+      document.dispatchEvent(new CustomEvent('bga_ext_set_config', { detail: jsonData }));
+    } else {
+      setTimeout(exportConfig, 100);
+    }
+  };
+  exportConfig();
+});
