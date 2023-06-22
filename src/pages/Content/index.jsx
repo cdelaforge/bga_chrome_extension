@@ -239,8 +239,6 @@ const initDevelopperUI = (config) => {
 
     createRoot(container).render(<Templates config={config} gameName={gameName} />);
   }
-
-  setTimeout(() => initDevelopperUI(config), 500);
 };
 
 const buildOption = (title, text, inputId, inputValue, option1, option2, toggleFunc) => {
