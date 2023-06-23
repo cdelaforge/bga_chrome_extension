@@ -9,6 +9,7 @@ import { isNumber, addLocationChangeListener } from '../../helpers/Misc';
 
 let gameConfig;
 let playersData;
+let currentObserver;
 
 const buildLeftMenuCss = (enable) => {
   const menuStyleId = 'cde-left-menu-style';
@@ -100,7 +101,7 @@ const initlogObserver = () => {
     return;
   }
 
-  const observer = new MutationObserver(() => {
+  currentObserver = new MutationObserver(() => {
     logsContainer.childNodes.forEach((elt, index) => {
       const text = elt.innerHTML;
       if (text && text.indexOf('<!--PNS-->') >= 0 && shouldFilter(text)) {
@@ -112,7 +113,7 @@ const initlogObserver = () => {
     });
   });
 
-  observer.observe(logsContainer, { childList: true, subtree: true });
+  currentObserver.observe(logsContainer, { childList: true, subtree: true });
 };
 
 const createHiddenGameStyle = (content) => {
@@ -130,34 +131,33 @@ const createHiddenGameStyle = (content) => {
   return style;
 };
 
-const initGameLobby = (config) => {
-  const mainElt = document.querySelector('#main-content');
+const initGameListObserver = (config, page) => {
+  const mainElt = document.querySelector('#overall-content');
 
   if (!mainElt) {
-    setTimeout(initGameLobby, 100);
+    setTimeout(() => initGameListObserver(config, page), 100);
     return;
   }
 
-  createHiddenGameStyle(config.getHiddenGamesLobbyStyle());
-};
-
-const initGameListObserver = (config) => {
-  const mainElt = document.querySelector('#main-content');
-
-  if (!mainElt) {
-    setTimeout(initGameListObserver, 100);
-    return;
+  const getStyle = () => {
+    switch (page) {
+      case 'gamelist':
+        return config.getHiddenGamesListStyle();
+      case 'lobby':
+        return config.getHiddenGamesLobbyStyle();
+      default:
+        return config.getHiddenGamesStyle();
+    }
   }
-
-  const style = createHiddenGameStyle(config.getHiddenGamesListStyle());
-  const updateHiddenGameStyle = () => style.innerHTML = config.getHiddenGamesListStyle();
+  const style = createHiddenGameStyle(getStyle());
+  const updateHiddenGameStyle = () => style.innerHTML = getStyle();
 
   const hideGame = (name) => {
     config.hideGame(name);
     updateHiddenGameStyle();
   };
 
-  const observer = new MutationObserver(() => {
+  currentObserver = new MutationObserver(() => {
     const buttons = document.querySelectorAll('.bgabutton_blue[href*="/gamepanel?game="]');
 
     buttons.forEach(but => {
@@ -173,13 +173,13 @@ const initGameListObserver = (config) => {
         removeBut.style.margin = '0px 0px 0px 5px';
         removeBut.style.minWidth = '32px';
         removeBut.innerHTML = '<div class="flex items-center"><div class="text-center"><i class="fa fa-trash"/></div></div>';
-        removeBut.onclick = () => hideGame(but.href.split('=')[1]);
+        removeBut.onclick = (evt) => { hideGame(but.href.split('=')[1]); evt.stopPropagation(); }
         container.appendChild(removeBut);
       }
     });
   });
 
-  observer.observe(mainElt, { childList: true, subtree: true });
+  currentObserver.observe(mainElt, { childList: true, subtree: true });
 };
 
 const initLeftMenu = (leftMenuEnable) => {
@@ -351,6 +351,11 @@ const manageLocationChange = (pathname) => {
 
   const pageInfo = pathname.substring(1).split('/');
 
+  if (currentObserver) {
+    currentObserver.disconnect();
+    currentObserver = null;
+  }
+
   if (pageInfo.length >= 2 && isNumber(pageInfo[0])) {
     const gameName = pageInfo[1];
     gameConfig = config.getGameConfig(gameName);
@@ -375,11 +380,14 @@ const manageLocationChange = (pathname) => {
 
     initLeftMenu(config.isLeftMenuEnabled(gameName));
   } else if (pageInfo[0].startsWith('gamelist')) {
-    initGameListObserver(config);
+    initGameListObserver(config, 'gamelist');
   } else if (pageInfo[0].startsWith('lobby')) {
-    initGameLobby(config);
+    initGameListObserver(config, 'lobby');
   } else if (pageInfo[0].startsWith('bug')) {
+    initGameListObserver(config, 'other');
     initDevelopperUI(config);
+  } else {
+    initGameListObserver(config, 'other');
   }
 };
 

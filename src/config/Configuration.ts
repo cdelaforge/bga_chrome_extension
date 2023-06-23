@@ -243,7 +243,11 @@ class Configuration {
   }
 
   getHiddenGamesLobbyStyle() {
-    return this._customConfig.hidden.map(name => `div.game_box_wrap:has(> div > div > div > a[href="/gamepanel?game=${name}"]) { display: none; }`).join(' ');
+    return this._customConfig.hidden.map(name => `div:has(> a[href="/gamepanel?game=${name}"]), div.game_box_wrap:has(> div > div > div > a[href="/gamepanel?game=${name}"]) { display: none; }`).join(' ');
+  }
+
+  getHiddenGamesStyle() {
+    return this._customConfig.hidden.map(name => `div:has(> a[href="/gamepanel?game=${name}"]) { display: none; }`).join(' ');
   }
 }
 
