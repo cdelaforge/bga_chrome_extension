@@ -1,0 +1,36 @@
+This extension adds the following features to the BoardGameArena:
+
+1) A vertical menu on the left edge of the screen to easily navigate between the players' boards.
+This feature is available for 100 games so far. Don't hesitate to ask me if you want a game to be added!
+
+2) An option to enable/disable messages about your friends' activity in the game log.
+These messages are disabled by default in the extension.
+
+3) An option to display the game log and the player panels in a floating menu on the right. This saves space for the game itself if your screen is too small.
+This option is disabled by default in the extension.
+
+4) A button for 'deleting' a game. This button appears next to the button for starting the game in the list of games.
+Deleted games no longer appear in the list of games or in the lobby.
+You can cancel the deletion of a game from the extension options screen.
+
+5) An icon to hide/display the global chat, in the top right corner of the screen.
+
+
+
+
+Cette extension ajoute les fonctionnalités suivantes sur le site BoardGameArena :
+
+1) Un menu vertical sur le bord gauche de l'écran pour naviguer facilement entre les tableaux des différents joueurs.
+Cette fonctionnalité est pour le moment disponible pour 100 jeux. N'hésitez pas à me demander si vous désirez l'ajout d'un jeu !
+
+2) Une option permettant d'activer/désactiver dans le journal de jeu les messages indiquant que vos amis se connectent et se déconnectent.
+Ces messages sont désactivés par défaut dans l'extension.
+
+3) Une option permettant d'afficher le journal de jeu et les panneaux des joueurs dans un menu flottant à droite. Ce qui vous permet de gagner de la place pour le jeu lui même si votre écran est trop petit.
+Cette option est désactivée par défaut dans l'extension.
+
+4) Un bouton permettant de "supprimer" un jeu, ce bouton apparaît à coté du bouton permettant de démarrer le jeu dans la liste des jeux.
+Les jeux supprimés n'apparaissent plus dans la liste des jeux et dans le lobby.
+Il est possible d'annuler la suppression d'un jeu sur l'écran des options de l'extension
+
+5) Un icône, dans le coin supérieur droit de l'écran, permettant de cacher/afficher le chat global.

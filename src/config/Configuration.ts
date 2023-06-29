@@ -29,17 +29,20 @@ export interface Template {
   game: string
 };
 
+interface CustomConfig {
+  games: Game[],
+  disabled: string[],
+  hidden: string[],
+  floating: string[],
+  onlineMessages?: boolean,
+  floatingRightMenu?: boolean,
+  devTemplates?: Template[]
+  hideGeneralChat?: boolean;
+};
+
 class Configuration {
   _defConfig: { games: Game[] };
-  _customConfig: {
-    games: Game[],
-    disabled: string[],
-    hidden: string[],
-    floating: string[],
-    onlineMessages?: boolean,
-    floatingRightMenu?: boolean,
-    devTemplates?: Template[]
-  };
+  _customConfig: CustomConfig;
   _config: { games: Game[] };
   _initialized: boolean;
 
@@ -81,6 +84,13 @@ class Configuration {
     this._customConfig.floatingRightMenu = this._customConfig.floatingRightMenu || false;
     this.merge();
     this._initialized = true;
+
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+      for (let [key, { newValue }] of Object.entries(changes)) {
+        this._customConfig[key as keyof CustomConfig] = newValue;
+        document.dispatchEvent(new CustomEvent('bga_ext_update_config', { detail: { key } }));
+      }
+    });
   }
 
   private merge() {
@@ -238,16 +248,35 @@ class Configuration {
     return this._customConfig.hidden.sort();
   }
 
-  getHiddenGamesListStyle() {
-    return this._customConfig.hidden.map(name => `div:has(> a[href="/gamepanel?game=${name}"]), div.bga-game-browser-carousel__block:has(> div > a[href="/gamepanel?game=${name}"]) { display: none; }`).join(' ');
+  getHiddenGamesStyle(page: string) {
+    switch (page) {
+      case 'gamelist':
+        return this._customConfig.hidden.map(name => `div:has(> a[href="/gamepanel?game=${name}"]), div.bga-game-browser-carousel__block:has(> div > a[href="/gamepanel?game=${name}"]) { display: none; }`).join(' ');
+      case 'lobby':
+        return this._customConfig.hidden.map(name => `div:has(> a[href="/gamepanel?game=${name}"]), div.game_box_wrap:has(> div > div > div > a[href="/gamepanel?game=${name}"]) { display: none; }`).join(' ');
+      default:
+        return this._customConfig.hidden.map(name => `div:has(> a[href="/gamepanel?game=${name}"]) { display: none; }`).join(' ');
+    }
   }
 
-  getHiddenGamesLobbyStyle() {
-    return this._customConfig.hidden.map(name => `div:has(> a[href="/gamepanel?game=${name}"]), div.game_box_wrap:has(> div > div > div > a[href="/gamepanel?game=${name}"]) { display: none; }`).join(' ');
+  isGeneralChatHidden() {
+    return !!this._customConfig.hideGeneralChat;
   }
 
-  getHiddenGamesStyle() {
-    return this._customConfig.hidden.map(name => `div:has(> a[href="/gamepanel?game=${name}"]) { display: none; }`).join(' ');
+  setGeneralChatHidden(val: boolean) {
+    this._customConfig.hideGeneralChat = val;
+    chrome.storage.sync.set({ hideGeneralChat: val });
+  }
+
+  toggleGeneralChatHidden() {
+    this.setGeneralChatHidden(!this._customConfig.hideGeneralChat);
+  }
+
+  getChatStyle() {
+    if (this._customConfig.hideGeneralChat) {
+      return '#bga_extension_chat_icon { color: #c4c4c4; } #chatwindow_general { display: none !important; }';
+    }
+    return '#bga_extension_chat_icon { color: #01c4ca; } #chatwindow_general { display: inline-block !important; }';
   }
 }
 

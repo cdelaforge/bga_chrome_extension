@@ -139,18 +139,8 @@ const initGameListObserver = (config, page) => {
     return;
   }
 
-  const getStyle = () => {
-    switch (page) {
-      case 'gamelist':
-        return config.getHiddenGamesListStyle();
-      case 'lobby':
-        return config.getHiddenGamesLobbyStyle();
-      default:
-        return config.getHiddenGamesStyle();
-    }
-  }
-  const style = createHiddenGameStyle(getStyle());
-  const updateHiddenGameStyle = () => style.innerHTML = getStyle();
+  const style = createHiddenGameStyle(config.getHiddenGamesStyle(page));
+  const updateHiddenGameStyle = () => style.innerHTML = config.getHiddenGamesStyle(page);
 
   const hideGame = (name) => {
     config.hideGame(name);
@@ -163,7 +153,7 @@ const initGameListObserver = (config, page) => {
     buttons.forEach(but => {
       const container = but.parentNode;
 
-      if (!container.lastChild.classList.contains('bgabutton_red')) {
+      if (!but.classList.contains('bgabutton_medium') && !container.lastChild.classList.contains('bgabutton_red')) {
         but.style.minWidth = '100px';
         container.style.boxShadow = 'none';
 
@@ -346,6 +336,46 @@ const buildOptions = (config, gameName, gameConfig) => {
   buildOption(secondPrefTitle, displayActivityText, 'cde_activity_2', displayActivity, infobulleInput[0].text, infobulleInput[1].text, toggleFriendsActivity);
 };
 
+const initChatIcon = (config) => {
+  const chatIconId = 'bga_extension_chat_icon';
+  const friendsElt = document.querySelector('.bga-friends-icon');
+
+  if (!friendsElt) {
+    setTimeout(() => initChatIcon(config), 100);
+    return;
+  }
+
+  const container = friendsElt.parentNode;
+
+  if (!document.getElementById(chatIconId)) {
+    const chatElt = document.createElement('div');
+    chatElt.id = chatIconId;
+    chatElt.innerHTML = '<i class="fa fa-comments" style="font-size: 32px; cursor: pointer;"></i>';
+    chatElt.onclick = () => config.toggleGeneralChatHidden();
+    container.parentNode.insertBefore(chatElt, container);
+
+    const sepElt = document.createElement('div');
+    sepElt.className = 'ml-1 tablet:ml-6';
+    container.parentNode.insertBefore(sepElt, container);
+
+    setChatStyle(config);
+  }
+};
+
+const setChatStyle = (config) => {
+  const chatStyleId = 'cde-chat-style';
+
+  let style = document.getElementById(chatStyleId);
+
+  if (!style) {
+    style = document.createElement('style');
+    style.id = chatStyleId;
+    document.head.appendChild(style);
+  }
+
+  style.innerHTML = config.getChatStyle();
+};
+
 const manageLocationChange = (pathname) => {
   console.log('[bga extension] load path', pathname);
 
@@ -379,15 +409,19 @@ const manageLocationChange = (pathname) => {
     }
 
     initLeftMenu(config.isLeftMenuEnabled(gameName));
-  } else if (pageInfo[0].startsWith('gamelist')) {
-    initGameListObserver(config, 'gamelist');
-  } else if (pageInfo[0].startsWith('lobby')) {
-    initGameListObserver(config, 'lobby');
-  } else if (pageInfo[0].startsWith('bug')) {
-    initGameListObserver(config, 'other');
-    initDevelopperUI(config);
   } else {
-    initGameListObserver(config, 'other');
+    initChatIcon(config);
+
+    if (pageInfo[0].startsWith('gamelist')) {
+      initGameListObserver(config, 'gamelist');
+    } else if (pageInfo[0].startsWith('lobby')) {
+      initGameListObserver(config, 'lobby');
+    } else if (pageInfo[0].startsWith('bug')) {
+      initGameListObserver(config, 'other');
+      initDevelopperUI(config);
+    } else {
+      initGameListObserver(config, 'other');
+    }
   }
 };
 
@@ -414,4 +448,10 @@ document.addEventListener('bga_ext_get_config', () => {
     }
   };
   exportConfig();
+});
+
+document.addEventListener('bga_ext_update_config', (data) => {
+  if (data.detail.key === 'hideGeneralChat') {
+    setChatStyle(config);
+  }
 });
