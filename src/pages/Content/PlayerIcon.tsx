@@ -49,6 +49,10 @@ const PlayerIcon = (props: PlayerIconProps) => {
     return gameConfig.bottomPanelOffset || 0;
   };
 
+  const isTouchEnabled = () => {
+    return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || ((navigator as any).msMaxTouchPoints > 0);
+  }
+
   const scrollToPlayer = () => {
     const id = eltId;
     const element = document.getElementById(id);
@@ -77,7 +81,7 @@ const PlayerIcon = (props: PlayerIconProps) => {
     const currentPos = window.scrollY;
     const minTop = topBar.getBoundingClientRect().height + 20;
     if (currentPos < minTop) {
-      window.scrollTo({ top: topBar.getBoundingClientRect().height + 20 });
+      window.scrollTo({ top: minTop + 10 });
       setTimeout(scrollToPlayer, 50);
       return;
     }
@@ -88,6 +92,10 @@ const PlayerIcon = (props: PlayerIconProps) => {
       behavior: 'smooth',
       top: (((element.getBoundingClientRect().top - decTitleBar) * customZoom) - (getOffset() / customZoom)) * zoom - document.body.getBoundingClientRect().top,
     });
+
+    if (isTouchEnabled()) {
+      setTimeout(() => setOver(false), 2000);
+    }
   };
 
   const getTextColor = (playerColor: string | undefined) => {
@@ -112,7 +120,13 @@ const PlayerIcon = (props: PlayerIconProps) => {
 
   return (
     <SideMenuItem onClick={scrollToPlayer}>
-      <Avatar backColor={gameConfig.iconBackground} borderColor={gameConfig.iconBorder} shadowColor={gameConfig.iconShadow} onMouseOver={() => setOver(true)} onMouseOut={() => setOver(false)}>
+      <Avatar
+        backColor={gameConfig.iconBackground}
+        borderColor={gameConfig.iconBorder}
+        shadowColor={gameConfig.iconShadow}
+        onMouseOver={() => setOver(true)}
+        onMouseOut={() => setOver(false)}
+      >
         {getIcon()}
       </Avatar>
       <PlayerName backColor={player.color} borderColor={gameConfig.iconBorder} shadowColor={gameConfig.iconShadow} textColor={getTextColor(player.color)} hover={player.name && over}>{player.name}</PlayerName>

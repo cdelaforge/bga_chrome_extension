@@ -107,11 +107,15 @@ const SideMenu = (props: SideMenuProps) => {
     });
 
     if (gameConfig.boardPanel) {
-      toSort.push({
-        id: gameConfig.boardPanel,
-        index: -1,
-        pos: document.getElementById(gameConfig.boardPanel)?.getBoundingClientRect().top || 0
-      });
+      const boardPos = document.getElementById(gameConfig.boardPanel)?.getBoundingClientRect().top || 0;
+
+      if (window.scrollY + boardPos > 200) {
+        toSort.push({
+          id: gameConfig.boardPanel,
+          index: -1,
+          pos: boardPos
+        });
+      }
     }
 
     if (gameConfig.bottomPanel) {
