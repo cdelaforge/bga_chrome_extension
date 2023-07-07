@@ -433,6 +433,12 @@ config.init().then(() => {
     return;
   }
 
+  document.addEventListener('bga_ext_update_config', (data) => {
+    if (data.detail.key === 'hideGeneralChat') {
+      setChatStyle(config);
+    }
+  });
+
   addLocationChangeListener(manageLocationChange);
   manageLocationChange(window.location.pathname);
 });
@@ -448,10 +454,4 @@ document.addEventListener('bga_ext_get_config', () => {
     }
   };
   exportConfig();
-});
-
-document.addEventListener('bga_ext_update_config', (data) => {
-  if (data.detail.key === 'hideGeneralChat') {
-    setChatStyle(config);
-  }
 });
