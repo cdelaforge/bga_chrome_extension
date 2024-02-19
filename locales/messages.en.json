@@ -73,5 +73,17 @@
   },
   "sideMenuMainBoard": {
     "message": "Main board"
+  },
+  "deprecatedWarning": {
+    "message": "You are using a Google Chrome extension that is no longer supported. You can uninstall it by clicking on {0} and install {1} instead, which will give you the same features ... and more! <br> Thanks for using my extension, and don't hesitate to come and chat {2} if you have any problems upgrading to the new version, or to give me your opinion on my work 🙂"
+  },
+  "thisLink": {
+    "message": "this link"
+  },
+  "thisExtension": {
+    "message": "this extension"
+  },
+  "onTheForum": {
+    "message": "on the forum"
   }
 }

@@ -427,7 +427,71 @@ const manageLocationChange = (pathname) => {
 
 const config = new Configuration();
 
+function setCookie(cname, cvalue, exdays) {
+  const d = new Date();
+  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+  let expires = "expires=" + d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
+function getCookie(cname) {
+  let name = cname + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) === 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
 config.init().then(() => {
+  if (!getCookie("deprecation_message")) {
+    const style = document.createElement('style');
+    style.innerHTML = ".deprecation-banner { position: relative; margin: 1em; background: #fff; color:#000; } .darkmode .deprecation-banner {  background: #000; color:#fff; }";
+    document.head.appendChild(style);
+
+    const div = document.createElement("DIV");
+    div.id = "lrf-bga-extension";
+    div.style.position = "relative";
+    div.style.margin = "1em";
+    div.style.paddingRight = "30px";
+    div.className = "deprecation-banner ";
+
+    const uninstallLink = `<a target="_blank" href="https://chromewebstore.google.com/detail/boardgamearena-extension/jdiekdaapekbemobdeacplcfmignidoc?hl=fr">${chrome.i18n.getMessage("thisLink")}</a>`;
+    const installLink = `<a target="_blank" href="https://chromewebstore.google.com/detail/bga-chrome-extension/kchnhmpeopknjdjejognciimepllkacb?hl=fr">${chrome.i18n.getMessage("thisExtension")}</a>`;
+    const forumLink = `<a href="https://boardgamearena.com/forum/viewtopic.php?t=30509">${chrome.i18n.getMessage("onTheForum")}</a>`;
+    const warningMessage = chrome.i18n.getMessage("deprecatedWarning").replace("{0}", uninstallLink).replace("{1}", installLink).replace("{2}", forumLink);
+
+    const warning = document.createElement("DIV");
+    warning.style.textAlign = "center";
+    warning.style.lineHeight = "32px";
+    warning.innerHTML = '<span style="color: red; font-size: 32px;">⚠</span>&nbsp;' + warningMessage;
+    div.appendChild(warning);
+
+    const closeButton = document.createElement("DIV");
+    closeButton.style.position = "absolute";
+    closeButton.style.top = "10px";
+    closeButton.style.right = "10px";
+    closeButton.style.fontSize = "24px";
+    closeButton.style.cursor = "pointer";
+    closeButton.innerHTML = '<i class="fa fa-times-circle" aria-hidden="true"></i>';
+    div.appendChild(closeButton);
+
+    const content = document.getElementById("overall-content");
+    content.insertBefore(div, content.firstChild);
+
+    closeButton.onclick = () => {
+      div.style.display = "none";
+      setCookie("deprecation_message", "displayed", 1);
+    };
+  }
+
   if (document.getElementById("cde_bga_ext")) {
     console.log('[bga extension] extension is deprecated => disabled');
     return;

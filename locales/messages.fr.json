@@ -73,5 +73,17 @@
   },
   "sideMenuMainBoard": {
     "message": "Plateau principal"
+  },
+  "deprecatedWarning": {
+    "message": "Vous utilisez une extension pour Google Chrome qui n'est plus maintenue. Vous pouvez la désinstaller en cliquant sur {0} et installer {1} à la place, qui vous apportera les mêmes fonctionnalités ... et plus encore ! <br> Merci d'avoir utilisé mon extension, et n'hésitez pas à venir discuter {2} si vous rencontrez des soucis pour passer à la nouvelle version, ou pour me donner votre avis sur mon travail 🙂"
+  },
+  "thisLink": {
+    "message": "ce lien"
+  },
+  "thisExtension": {
+    "message": "cette extension"
+  },
+  "onTheForum": {
+    "message": "sur le forum"
   }
 }
